@@ -110,7 +110,7 @@ export default async function DriversPage() {
           <CardHeader>
             <CardTitle className="text-red-600">API Error</CardTitle>
             <CardDescription>
-              Unable to fetch driver standings from Ergast API
+              Unable to fetch driver standings from F1 APIs
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -122,7 +122,8 @@ export default async function DriversPage() {
                 <h4 className="font-semibold mb-2">Troubleshooting:</h4>
                 <ul className="text-sm space-y-1">
                   <li>• Check your internet connection</li>
-                  <li>• Verify Ergast API is accessible</li>
+                  <li>• Ergast API is deprecated as of end of 2024</li>
+                  <li>• We're using alternative F1 APIs (Jolpica, etc.)</li>
                   <li>• Try refreshing the page</li>
                   <li>• Check browser console for more details</li>
                 </ul>

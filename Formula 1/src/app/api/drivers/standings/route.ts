@@ -6,21 +6,22 @@ export async function GET(request: NextRequest) {
     const season = searchParams.get('season') || '2024'
     const round = searchParams.get('round') || 'current'
 
-    // Fetch driver standings from Ergast API
-    // Try multiple endpoints for better connectivity
-    const ergastUrls = [
-      `https://ergast.com/api/f1/${season}/${round}/driverStandings.json`,
-      `http://ergast.com/api/f1/${season}/${round}/driverStandings.json`,
-      `https://ergastapi.com/api/f1/${season}/${round}/driverStandings.json`
+    // Fetch driver standings from alternative F1 APIs
+    // Ergast API is deprecated as of end of 2024
+    // Using Jolpica F1 API as primary source (more reliable)
+    const apiUrls = [
+      `https://api.jolpica.com/f1/${season}/${round}/driverStandings.json`,
+      `https://ergast.com/api/f1/${season}/${round}/driverStandings.json`, // Fallback to Ergast if still available
+      `https://api.formula1.com/v1/f1/${season}/${round}/driverStandings.json` // Official F1 API (if available)
     ]
     
     let response
     let lastError
     
     // Try each URL until one works
-    for (const url of ergastUrls) {
+    for (const url of apiUrls) {
       try {
-        console.log('Trying Ergast API:', url)
+        console.log('Trying F1 API:', url)
         
         response = await fetch(url, {
           method: 'GET',
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
         console.log('API Response status:', response.status)
         
         if (response.ok) {
-          ergastUrl = url
+          console.log('Successfully connected to:', url)
           break
         } else {
           lastError = new Error(`API returned ${response.status}: ${response.statusText}`)
@@ -46,7 +47,7 @@ export async function GET(request: NextRequest) {
     }
     
     if (!response || !response.ok) {
-      throw lastError || new Error('All Ergast API endpoints failed')
+      throw lastError || new Error('All F1 API endpoints failed - Ergast API is deprecated as of end of 2024')
     }
 
     const data = await response.json()
