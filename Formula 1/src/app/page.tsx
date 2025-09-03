@@ -2,27 +2,46 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Trophy, Users, Calendar, Newspaper } from 'lucide-react'
+import Image from 'next/image'
 
 export default function HomePage() {
   return (
     <div className="space-y-8">
-      {/* Hero Section */}
-      <section className="text-center py-12">
-        <h1 className="text-4xl md:text-6xl font-bold mb-4">
-          Welcome to{' '}
-          <span className="f1-red">Formula 1</span>
-        </h1>
-        <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Your ultimate destination for F1 statistics, news, and analysis. 
-          Stay up-to-date with the latest from the world of Formula 1.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="f1-bg-red hover:bg-red-700" asChild>
-            <a href="/drivers">View Standings</a>
-          </Button>
-          <Button size="lg" variant="outline" asChild>
-            <a href="/news">Latest News</a>
-          </Button>
+      {/* Hero Section with F1 Image */}
+      <section className="relative">
+        {/* F1 Background Image */}
+        <div className="relative h-96 md:h-[500px] overflow-hidden rounded-lg">
+          <Image
+            src="/F1.jpg"
+            alt="Formula 1 Las Vegas Grand Prix - Night race with F1 cars on track"
+            fill
+            className="object-cover"
+            priority
+          />
+          {/* Overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/40" />
+          
+          {/* Hero Content */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center text-white px-4">
+              <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                Welcome to{' '}
+                <span className="text-red-500">Formula 1</span>
+              </h1>
+              <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+                Your ultimate destination for F1 statistics, news, and analysis. 
+                Stay up-to-date with the latest from the world of Formula 1.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white" asChild>
+                  <a href="/drivers">View Standings</a>
+                </Button>
+                <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white/20" asChild>
+                  <a href="/news">Latest News</a>
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
