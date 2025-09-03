@@ -7,23 +7,46 @@ export async function GET(request: NextRequest) {
     const round = searchParams.get('round') || 'current'
 
     // Fetch driver standings from Ergast API
-    const ergastUrl = `https://ergast.com/api/f1/${season}/${round}/driverStandings.json`
+    // Try multiple endpoints for better connectivity
+    const ergastUrls = [
+      `https://ergast.com/api/f1/${season}/${round}/driverStandings.json`,
+      `http://ergast.com/api/f1/${season}/${round}/driverStandings.json`,
+      `https://ergastapi.com/api/f1/${season}/${round}/driverStandings.json`
+    ]
     
-    console.log('Fetching from Ergast API:', ergastUrl)
+    let response
+    let lastError
     
-    const response = await fetch(ergastUrl, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      },
-      // Remove timeout to allow longer connection attempts
-    })
+    // Try each URL until one works
+    for (const url of ergastUrls) {
+      try {
+        console.log('Trying Ergast API:', url)
+        
+        response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+          }
+        })
+        
+        console.log('API Response status:', response.status)
+        
+        if (response.ok) {
+          ergastUrl = url
+          break
+        } else {
+          lastError = new Error(`API returned ${response.status}: ${response.statusText}`)
+        }
+      } catch (error) {
+        console.log('Failed to connect to:', url, error)
+        lastError = error
+        continue
+      }
+    }
     
-    console.log('API Response status:', response.status)
-    
-    if (!response.ok) {
-      throw new Error(`Ergast API returned ${response.status}: ${response.statusText}`)
+    if (!response || !response.ok) {
+      throw lastError || new Error('All Ergast API endpoints failed')
     }
 
     const data = await response.json()
