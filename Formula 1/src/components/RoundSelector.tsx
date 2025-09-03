@@ -18,7 +18,6 @@ export function RoundSelector({ currentSeason, currentRound }: RoundSelectorProp
 
   // Get the actual number of races for each season
   const getRacesPerSeason = (season: number): number => {
-    // Based on historical F1 data
     if (season >= 2024) return 24
     if (season >= 2023) return 22
     if (season >= 2022) return 22
@@ -120,7 +119,16 @@ export function RoundSelector({ currentSeason, currentRound }: RoundSelectorProp
 
   const handleRoundChange = (round: string) => {
     const params = new URLSearchParams(searchParams.toString())
-    params.set('round', round)
+    
+    // Validate round against current season
+    const maxRaces = getRacesPerSeason(currentSeason)
+    if (round !== 'current' && parseInt(round) > maxRaces) {
+      // If round is invalid for this season, reset to 'current'
+      params.set('round', 'current')
+    } else {
+      params.set('round', round)
+    }
+    
     router.push(`/drivers?${params.toString()}`)
     setIsOpen(false)
     setSearchTerm('') // Clear search when selection is made
