@@ -1,5 +1,3 @@
 {
-  "/page": "app/page.js",
-  "/drivers/page": "app/drivers/page.js",
-  "/api/drivers/standings/route": "app/api/drivers/standings/route.js"
+  "/drivers/page": "app/drivers/page.js"
 }

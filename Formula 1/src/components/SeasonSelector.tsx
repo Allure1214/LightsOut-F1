@@ -16,7 +16,7 @@ export function SeasonSelector({ currentSeason }: SeasonSelectorProps) {
   const [searchTerm, setSearchTerm] = useState('')
 
   // Generate list of available seasons (from 1950 to current year + 1)
-  // F1 officially started in 1950
+  // F1 World Championship officially started in 1950
   const currentYear = new Date().getFullYear()
   const allSeasons = Array.from({ length: currentYear - 1949 }, (_, i) => currentYear - i)
 

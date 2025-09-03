@@ -3,6 +3,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Trophy, Flag, Calendar, ChevronDown } from 'lucide-react'
 import { SeasonSelector } from '@/components/SeasonSelector'
+import { RoundSelector } from '@/components/RoundSelector'
+import { PointsSystemInfo } from '@/components/PointsSystemInfo'
 
 interface DriverStanding {
   position: number
@@ -33,10 +35,13 @@ interface DriverStandingsResponse {
   note?: string
 }
 
-async function getDriverStandings(season?: string): Promise<DriverStandingsResponse> {
+async function getDriverStandings(season?: string, round?: string): Promise<DriverStandingsResponse> {
   const url = new URL(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/drivers/standings`)
   if (season) {
     url.searchParams.set('season', season)
+  }
+  if (round) {
+    url.searchParams.set('round', round)
   }
   
   const res = await fetch(url.toString(), {
@@ -91,15 +96,16 @@ function getNationalityFlag(nationality: string): string {
 }
 
 interface DriversPageProps {
-  searchParams: { season?: string }
+  searchParams: { season?: string; round?: string }
 }
 
 export default async function DriversPage({ searchParams }: DriversPageProps) {
   const selectedSeason = searchParams.season || '2024'
+  const selectedRound = searchParams.round || 'current'
   let season, round, standings, note
   
   try {
-    const data = await getDriverStandings(selectedSeason)
+    const data = await getDriverStandings(selectedSeason, selectedRound)
     season = data.season
     round = data.round
     standings = data.standings
@@ -160,9 +166,7 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
         </p>
         <div className="flex items-center justify-center gap-4 mt-4">
           <SeasonSelector currentSeason={season} />
-          <Badge variant="outline">
-            Round {round}
-          </Badge>
+          <RoundSelector currentSeason={season} currentRound={round} />
           {note && (
             <Badge variant="secondary" className="text-xs">
               {note}
@@ -321,6 +325,9 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
           </CardContent>
         </Card>
       </div>
+
+      {/* Points System Information */}
+      <PointsSystemInfo season={season} />
     </div>
   )
 }
