@@ -1,0 +1,27 @@
+# Ignore files from parent directories
+../*
+
+# Common files to ignore
+*.log
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (if using Node.js)
+node_modules/
+
+# Python cache (if using Python)
+__pycache__/
+*.pyc
+*.pyo
+
+# Build directories
+build/
+dist/
