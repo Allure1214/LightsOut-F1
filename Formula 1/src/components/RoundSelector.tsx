@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { ChevronDown, Flag } from 'lucide-react'
@@ -10,11 +10,59 @@ interface RoundSelectorProps {
   currentRound: string
 }
 
+interface Race {
+  round: number
+  raceName: string
+  date: string
+  time: string
+  circuit: {
+    circuitId: string
+    circuitName: string
+    country: string
+    locality: string
+    lat: number
+    lng: number
+    url: string
+  }
+  url: string
+}
+
+interface RaceScheduleResponse {
+  season: number
+  races: Race[]
+}
+
 export function RoundSelector({ currentSeason, currentRound }: RoundSelectorProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isOpen, setIsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const [races, setRaces] = useState<Race[]>([])
+  const [isLoadingRaces, setIsLoadingRaces] = useState(false)
+
+  // Fetch race schedule data
+  useEffect(() => {
+    const fetchRaces = async () => {
+      setIsLoadingRaces(true)
+      try {
+        const response = await fetch(`/api/races/schedule?season=${currentSeason}`)
+        if (response.ok) {
+          const data: RaceScheduleResponse = await response.json()
+          setRaces(data.races)
+        } else {
+          // If API doesn't provide race data, races array will remain empty
+          setRaces([])
+        }
+      } catch (error) {
+        console.error('Failed to fetch race schedule:', error)
+        setRaces([])
+      } finally {
+        setIsLoadingRaces(false)
+      }
+    }
+
+    fetchRaces()
+  }, [currentSeason])
 
   // Get the actual number of races for each season
   const getRacesPerSeason = (season: number): number => {
@@ -141,6 +189,13 @@ export function RoundSelector({ currentSeason, currentRound }: RoundSelectorProp
 
   const getRoundDisplayName = (round: string) => {
     if (round === 'current') return 'Current (Latest)'
+    
+    // Try to find race data for this round
+    const race = races.find(r => r.round === parseInt(round))
+    if (race) {
+      return `Round ${round} - ${race.circuit.country}`
+    }
+    
     return `Round ${round}`
   }
 
@@ -180,19 +235,29 @@ export function RoundSelector({ currentSeason, currentRound }: RoundSelectorProp
                   No rounds found
                 </div>
               ) : (
-                filteredRounds.map((round) => (
-                  <button
-                    key={round}
-                    onClick={() => handleRoundChange(round)}
-                    className={`w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-100 transition-colors ${
-                      round === currentRound 
-                        ? 'bg-blue-100 text-blue-700 font-medium' 
-                        : 'text-gray-700'
-                    }`}
-                  >
-                    {getRoundDisplayName(round)}
-                  </button>
-                ))
+                filteredRounds.map((round) => {
+                  const race = races.find(r => r.round === parseInt(round))
+                  return (
+                    <button
+                      key={round}
+                      onClick={() => handleRoundChange(round)}
+                      className={`w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-100 transition-colors ${
+                        round === currentRound 
+                          ? 'bg-blue-100 text-blue-700 font-medium' 
+                          : 'text-gray-700'
+                      }`}
+                    >
+                      <div className="flex flex-col">
+                        <span className="font-medium">{getRoundDisplayName(round)}</span>
+                        {race && (
+                          <span className="text-xs text-gray-500 mt-0.5">
+                            {race.raceName}
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  )
+                })
               )}
             </div>
           </div>
