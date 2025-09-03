@@ -17,11 +17,11 @@ export default function HomePage() {
           Stay up-to-date with the latest from the world of Formula 1.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="f1-bg-red hover:bg-red-700">
-            View Standings
+          <Button size="lg" className="f1-bg-red hover:bg-red-700" asChild>
+            <a href="/drivers">View Standings</a>
           </Button>
-          <Button size="lg" variant="outline">
-            Latest News
+          <Button size="lg" variant="outline" asChild>
+            <a href="/news">Latest News</a>
           </Button>
         </div>
       </section>
@@ -37,8 +37,8 @@ export default function HomePage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="outline" className="w-full">
-              View Standings
+            <Button variant="outline" className="w-full" asChild>
+              <a href="/drivers">View Standings</a>
             </Button>
           </CardContent>
         </Card>
