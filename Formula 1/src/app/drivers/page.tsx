@@ -5,7 +5,6 @@ import { Trophy, Flag, Calendar, ChevronDown } from 'lucide-react'
 import { SeasonSelector } from '@/components/SeasonSelector'
 import { RoundSelector } from '@/components/RoundSelector'
 import { PointsSystemInfo } from '@/components/PointsSystemInfo'
-import { FlagDisplay } from '@/components/FlagDisplay'
 
 interface DriverStanding {
   position: number
@@ -65,202 +64,7 @@ function getPositionColor(position: number): string {
   return 'text-gray-500 bg-gray-50'
 }
 
-function getNationalityFlag(nationality: string): string {
-  const flags: { [key: string]: string } = {
-    'British': '🇬🇧',
-    'Dutch': '🇳🇱',
-    'Spanish': '🇪🇸',
-    'Monégasque': '🇲🇨',
-    'Monegasque': '🇲🇨', // Alternative spelling without accent
-    'Mexican': '🇲🇽',
-    'Australian': '🇦🇺',
-    'Canadian': '🇨🇦',
-    'French': '🇫🇷',
-    'German': '🇩🇪',
-    'Japanese': '🇯🇵',
-    'Finnish': '🇫🇮',
-    'Danish': '🇩🇰',
-    'Thai': '🇹🇭',
-    'Chinese': '🇨🇳',
-    'American': '🇺🇸',
-    'Italian': '🇮🇹',
-    'Brazilian': '🇧🇷',
-    'Argentine': '🇦🇷',
-    'South African': '🇿🇦',
-    'Austrian': '🇦🇹',
-    'Swiss': '🇨🇭',
-    'Belgian': '🇧🇪',
-    'New Zealander': '🇳🇿',
-    'Venezuelan': '🇻🇪',
-    'Russian': '🇷🇺',
-    'Portuguese': '🇵🇹',
-    'Polish': '🇵🇱',
-    'Czech': '🇨🇿',
-    'Hungarian': '🇭🇺',
-    'Swedish': '🇸🇪',
-    'Norwegian': '🇳🇴',
-    'Indian': '🇮🇳',
-    'Colombian': '🇨🇴',
-    'Chilean': '🇨🇱',
-    'Uruguayan': '🇺🇾',
-    'Peruvian': '🇵🇪',
-    'Ecuadorian': '🇪🇨',
-    'Paraguayan': '🇵🇾',
-    'Bolivian': '🇧🇴',
-    'Croatian': '🇭🇷',
-    'Slovenian': '🇸🇮',
-    'Slovak': '🇸🇰',
-    'Romanian': '🇷🇴',
-    'Bulgarian': '🇧🇬',
-    'Greek': '🇬🇷',
-    'Turkish': '🇹🇷',
-    'Israeli': '🇮🇱',
-    'Lebanese': '🇱🇧',
-    'Jordanian': '🇯🇴',
-    'Emirati': '🇦🇪',
-    'Saudi': '🇸🇦',
-    'Qatari': '🇶🇦',
-    'Kuwaiti': '🇰🇼',
-    'Bahraini': '🇧🇭',
-    'Omani': '🇴🇲',
-    'Yemeni': '🇾🇪',
-    'Iraqi': '🇮🇶',
-    'Iranian': '🇮🇷',
-    'Afghan': '🇦🇫',
-    'Pakistani': '🇵🇰',
-    'Bangladeshi': '🇧🇩',
-    'Sri Lankan': '🇱🇰',
-    'Nepalese': '🇳🇵',
-    'Bhutanese': '🇧🇹',
-    'Maldivian': '🇲🇻',
-    'Indonesian': '🇮🇩',
-    'Malaysian': '🇲🇾',
-    'Singaporean': '🇸🇬',
-    'Filipino': '🇵🇭',
-    'Vietnamese': '🇻🇳',
-    'Cambodian': '🇰🇭',
-    'Laotian': '🇱🇦',
-    'Myanmar': '🇲🇲',
-    'Korean': '🇰🇷',
-    'North Korean': '🇰🇵',
-    'Mongolian': '🇲🇳',
-    'Taiwanese': '🇹🇼',
-    'Hong Kong': '🇭🇰',
-    'Macanese': '🇲🇴'
-  }
-  
-  // Handle case variations and common aliases
-  const normalizedNationality = nationality?.trim() || ''
-  
-  // Try exact match first
-  let flag = flags[normalizedNationality]
-  
-  // If no exact match, try case variations
-  if (!flag) {
-    flag = flags[normalizedNationality.toLowerCase()] || 
-           flags[normalizedNationality.toUpperCase()] ||
-           flags[normalizedNationality.charAt(0).toUpperCase() + normalizedNationality.slice(1).toLowerCase()]
-  }
-  
-  // Debug logging (remove in production)
-  if (!flag) {
-    console.log(`No flag found for nationality: "${normalizedNationality}"`)
-  }
-  
-  return flag || '🏁'
-}
 
-function getCountryCode(nationality: string): string {
-  const countryCodes: { [key: string]: string } = {
-    'British': 'GB',
-    'Dutch': 'NL',
-    'Spanish': 'ES',
-    'Monégasque': 'MC',
-    'Monegasque': 'MC',
-    'Mexican': 'MX',
-    'Australian': 'AU',
-    'Canadian': 'CA',
-    'French': 'FR',
-    'German': 'DE',
-    'Japanese': 'JP',
-    'Finnish': 'FI',
-    'Danish': 'DK',
-    'Thai': 'TH',
-    'Chinese': 'CN',
-    'American': 'US',
-    'Italian': 'IT',
-    'Brazilian': 'BR',
-    'Argentine': 'AR',
-    'South African': 'ZA',
-    'Austrian': 'AT',
-    'Swiss': 'CH',
-    'Belgian': 'BE',
-    'New Zealander': 'NZ',
-    'Venezuelan': 'VE',
-    'Russian': 'RU',
-    'Portuguese': 'PT',
-    'Polish': 'PL',
-    'Czech': 'CZ',
-    'Hungarian': 'HU',
-    'Swedish': 'SE',
-    'Norwegian': 'NO',
-    'Indian': 'IN',
-    'Colombian': 'CO',
-    'Chilean': 'CL',
-    'Uruguayan': 'UY',
-    'Peruvian': 'PE',
-    'Ecuadorian': 'EC',
-    'Paraguayan': 'PY',
-    'Bolivian': 'BO',
-    'Croatian': 'HR',
-    'Slovenian': 'SI',
-    'Slovak': 'SK',
-    'Romanian': 'RO',
-    'Bulgarian': 'BG',
-    'Greek': 'GR',
-    'Turkish': 'TR',
-    'Israeli': 'IL',
-    'Lebanese': 'LB',
-    'Jordanian': 'JO',
-    'Emirati': 'AE',
-    'Saudi': 'SA',
-    'Qatari': 'QA',
-    'Kuwaiti': 'KW',
-    'Bahraini': 'BH',
-    'Omani': 'OM',
-    'Yemeni': 'YE',
-    'Iraqi': 'IQ',
-    'Iranian': 'IR',
-    'Afghan': 'AF',
-    'Pakistani': 'PK',
-    'Bangladeshi': 'BD',
-    'Sri Lankan': 'LK',
-    'Nepalese': 'NP',
-    'Bhutanese': 'BT',
-    'Maldivian': 'MV',
-    'Indonesian': 'ID',
-    'Malaysian': 'MY',
-    'Singaporean': 'SG',
-    'Filipino': 'PH',
-    'Vietnamese': 'VN',
-    'Cambodian': 'KH',
-    'Laotian': 'LA',
-    'Myanmar': 'MM',
-    'Korean': 'KR',
-    'North Korean': 'KP',
-    'Mongolian': 'MN',
-    'Taiwanese': 'TW',
-    'Hong Kong': 'HK',
-    'Macanese': 'MO'
-  }
-  
-  const normalizedNationality = nationality?.trim() || ''
-  return countryCodes[normalizedNationality] || 
-         countryCodes[normalizedNationality.toLowerCase()] || 
-         countryCodes[normalizedNationality.toUpperCase()] ||
-         countryCodes[normalizedNationality.charAt(0).toUpperCase() + normalizedNationality.slice(1).toLowerCase()] ||
-         'XX'
-}
 
 // Get the actual number of races for each season (same as RoundSelector)
 function getRacesPerSeason(season: number): number {
@@ -460,27 +264,22 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
                         {standing.position}
                       </Badge>
                     </td>
-                    <td className="p-3">
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2">
-                          <FlagDisplay nationality={standing.driver.nationality} size="md" />
-                        </div>
-                        <div>
-                          <div className="font-semibold">
-                            {standing.driver.firstName} {standing.driver.lastName}
-                          </div>
-                          <div className="text-sm text-muted-foreground flex items-center gap-1">
-                            <Flag className="w-3 h-3" />
-                            {standing.driver.nationality}
-                            {standing.driver.code && (
-                              <Badge variant="outline" className="ml-2 text-xs">
-                                {standing.driver.code}
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
+                                         <td className="p-3">
+                       <div>
+                         <div className="font-semibold">
+                           {standing.driver.firstName} {standing.driver.lastName}
+                         </div>
+                         <div className="text-sm text-muted-foreground flex items-center gap-1">
+                           <Flag className="w-3 h-3" />
+                           {standing.driver.nationality}
+                           {standing.driver.code && (
+                             <Badge variant="outline" className="ml-2 text-xs">
+                               {standing.driver.code}
+                             </Badge>
+                           )}
+                         </div>
+                       </div>
+                     </td>
                     <td className="p-3">
                       <div className="font-medium">{standing.team.name}</div>
                       {standing.team.nationality && (
