@@ -37,7 +37,8 @@ async function getDriverStandings(): Promise<DriverStandingsResponse> {
   })
   
   if (!res.ok) {
-    throw new Error('Failed to fetch driver standings')
+    const errorData = await res.json().catch(() => ({}))
+    throw new Error(errorData.details || `Failed to fetch driver standings (${res.status})`)
   }
   
   return res.json()
@@ -83,7 +84,55 @@ function getNationalityFlag(nationality: string): string {
 }
 
 export default async function DriversPage() {
-  const { season, round, standings, note } = await getDriverStandings()
+  let season, round, standings, note
+  
+  try {
+    const data = await getDriverStandings()
+    season = data.season
+    round = data.round
+    standings = data.standings
+    note = data.note
+  } catch (error) {
+    // Return error page if API fails
+    return (
+      <div className="space-y-8">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-2">
+            <Trophy className="inline-block w-10 h-10 f1-red mr-3" />
+            Driver Standings
+          </h1>
+          <p className="text-xl text-muted-foreground">
+            Unable to load current standings
+          </p>
+        </div>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-red-600">API Error</CardTitle>
+            <CardDescription>
+              Unable to fetch driver standings from Ergast API
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Error: {error instanceof Error ? error.message : 'Unknown error'}
+              </p>
+              <div className="bg-muted p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Troubleshooting:</h4>
+                <ul className="text-sm space-y-1">
+                  <li>• Check your internet connection</li>
+                  <li>• Verify Ergast API is accessible</li>
+                  <li>• Try refreshing the page</li>
+                  <li>• Check browser console for more details</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-8">
