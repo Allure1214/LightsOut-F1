@@ -5,6 +5,7 @@ import { Trophy, Flag, Calendar, ChevronDown } from 'lucide-react'
 import { SeasonSelector } from '@/components/SeasonSelector'
 import { RoundSelector } from '@/components/RoundSelector'
 import { PointsSystemInfo } from '@/components/PointsSystemInfo'
+import { FlagDisplay } from '@/components/FlagDisplay'
 
 interface DriverStanding {
   position: number
@@ -462,12 +463,7 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
                     <td className="p-3">
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2">
-                          <span className="text-3xl" title={`${standing.driver.nationality} flag`}>
-                            {getNationalityFlag(standing.driver.nationality)}
-                          </span>
-                          <span className="text-xs font-mono bg-gray-100 px-1 py-0.5 rounded">
-                            {getCountryCode(standing.driver.nationality)}
-                          </span>
+                          <FlagDisplay nationality={standing.driver.nationality} size="md" />
                         </div>
                         <div>
                           <div className="font-semibold">
@@ -562,25 +558,6 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
 
       {/* Points System Information */}
       <PointsSystemInfo season={season} />
-
-      {/* Debug Flag Test */}
-      <Card className="mt-4">
-        <CardHeader>
-          <CardTitle className="text-sm">Flag Test (Debug)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-4 text-sm">
-            <div>🇦🇺 Australian</div>
-            <div>🇬🇧 British</div>
-            <div>🇳🇱 Dutch</div>
-            <div>🇲🇨 Monegasque</div>
-            <div>🇪🇸 Spanish</div>
-            <div>🇫🇷 French</div>
-            <div>🇩🇪 German</div>
-            <div>🇮🇹 Italian</div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }
