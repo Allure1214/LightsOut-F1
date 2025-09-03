@@ -5,12 +5,12 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Formula 1 - Statistics, News & Articles',
+  title: 'LightsOut - Statistics, News & Articles',
   description: 'Comprehensive Formula 1 website featuring real-time statistics, news, and articles',
   keywords: ['Formula 1', 'F1', 'racing', 'statistics', 'news', 'drivers', 'teams'],
   authors: [{ name: 'Formula 1 Website' }],
   openGraph: {
-    title: 'Formula 1 - Statistics, News & Articles',
+    title: 'LightsOut - Statistics, News & Articles',
     description: 'Comprehensive Formula 1 website featuring real-time statistics, news, and articles',
     type: 'website',
   },
@@ -28,11 +28,13 @@ export default function RootLayout({
           <header className="border-b">
             <div className="container mx-auto px-4 py-4">
               <nav className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 f1-bg-red rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">F1</span>
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 f1-bg-red rounded-lg flex items-center justify-center shadow-lg">
+                    <span className="text-white font-bold text-lg">F1</span>
                   </div>
-                  <h1 className="text-2xl font-bold f1-red">Formula 1</h1>
+                  <div className="flex flex-col">
+                    <h1 className="text-2xl font-bold f1-red leading-tight">LightsOut</h1>
+                  </div>
                 </div>
                 <div className="hidden md:flex items-center space-x-6">
                   <a href="/" className="text-foreground hover:text-primary transition-colors">
@@ -60,7 +62,7 @@ export default function RootLayout({
           <footer className="border-t mt-16">
             <div className="container mx-auto px-4 py-8">
               <div className="text-center text-muted-foreground">
-                <p>&copy; 2024 Formula 1 Website. All rights reserved.</p>
+                <p>&copy; 2025 LightsOut Website. All rights reserved.</p>
                 <p className="mt-2 text-sm">
                   Data provided by{' '}
                   <a href="http://ergast.com/mrd/" className="text-primary hover:underline">

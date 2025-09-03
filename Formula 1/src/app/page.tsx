@@ -15,20 +15,20 @@ export default function HomePage() {
             src="/F1.jpg"
             alt="Formula 1 Las Vegas Grand Prix - Night race with F1 cars on track"
             fill
-            className="object-cover"
+            className="object-cover object-bottom"
             priority
           />
-          {/* Overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/40" />
+          {/* Enhanced overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
           
           {/* Hero Content */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center text-white px-4">
-              <h1 className="text-4xl md:text-6xl font-bold mb-4">
+              <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-2xl">
                 Welcome to{' '}
-                <span className="text-red-500">Formula 1</span>
+                <span className="text-red-400 drop-shadow-lg">Formula 1</span>
               </h1>
-              <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+              <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto drop-shadow-lg text-white/95">
                 Your ultimate destination for F1 statistics, news, and analysis. 
                 Stay up-to-date with the latest from the world of Formula 1.
               </p>
