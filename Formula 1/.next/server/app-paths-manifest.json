@@ -1,1 +1,4 @@
-{}
+{
+  "/drivers/page": "app/drivers/page.js",
+  "/page": "app/page.js"
+}

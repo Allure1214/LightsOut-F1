@@ -11,21 +11,14 @@ As of **December 2024**, the Ergast API has been officially deprecated and shut 
 - Added fallback mechanisms for multiple APIs
 - Updated error messages to reflect API deprecation
 
-### 🎯 **New API Sources:**
+### 🎯 **New API Source:**
 
-1. **Primary: Jolpica F1 API**
-   - URL: `https://api.jolpica.com/f1/{season}/{round}/driverStandings.json`
-   - Status: Active and maintained
-   - Reliability: High (mentioned as more reliable than Ergast)
-
-2. **Fallback: Ergast API** (if still available)
-   - URL: `https://ergast.com/api/f1/{season}/{round}/driverStandings.json`
-   - Status: Deprecated (end of 2024)
-   - Note: May still work temporarily
-
-3. **Future: Official F1 API** (if available)
-   - URL: `https://api.formula1.com/v1/f1/{season}/{round}/driverStandings.json`
-   - Status: Unknown availability
+**Jolpica F1 API** (Primary and Only)
+- URL: `https://api.jolpi.ca/ergast/f1/{season}/{round}/driverStandings.json`
+- Status: Active and maintained
+- Reliability: High (successor to Ergast API)
+- Backwards compatible with Ergast API format
+- Community maintained with 576+ GitHub stars
 
 ## 📊 **Alternative Data Sources:**
 
@@ -42,15 +35,15 @@ As of **December 2024**, the Ergast API has been officially deprecated and shut 
 
 ## 🛠️ **Implementation Details:**
 
-### **API Endpoint Priority:**
-1. Jolpica F1 API (primary)
-2. Ergast API (fallback, if available)
-3. Official F1 API (future)
+### **API Endpoint:**
+- **Single Source**: Jolpica F1 API only
+- **URL**: `https://api.jolpi.ca/ergast/f1/{season}/{round}/driverStandings.json`
+- **Format**: Ergast-compatible JSON response
 
 ### **Error Handling:**
-- Tries each endpoint sequentially
+- Direct connection to Jolpica F1 API
 - Provides detailed error messages
-- Shows deprecation notice to users
+- Shows API endpoint information to users
 - Logs connection attempts for debugging
 
 ## 🔮 **Future Plans:**

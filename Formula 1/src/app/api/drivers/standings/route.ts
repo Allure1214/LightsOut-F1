@@ -6,48 +6,28 @@ export async function GET(request: NextRequest) {
     const season = searchParams.get('season') || '2024'
     const round = searchParams.get('round') || 'current'
 
-    // Fetch driver standings from alternative F1 APIs
-    // Ergast API is deprecated as of end of 2024
-    // Using Jolpica F1 API as primary source (more reliable)
-    const apiUrls = [
-      `https://api.jolpica.com/f1/${season}/${round}/driverStandings.json`,
-      `https://ergast.com/api/f1/${season}/${round}/driverStandings.json`, // Fallback to Ergast if still available
-      `https://api.formula1.com/v1/f1/${season}/${round}/driverStandings.json` // Official F1 API (if available)
-    ]
+    // Fetch driver standings from Jolpica F1 API
+    // Jolpica F1 is the successor to the deprecated Ergast API
+    // API endpoint: https://api.jolpi.ca/ergast/f1/
+    // Note: Jolpica F1 uses different endpoint structure than Ergast
+    const jolpicaUrl = round === 'current' 
+      ? `https://api.jolpi.ca/ergast/f1/${season}/driverStandings.json`
+      : `https://api.jolpi.ca/ergast/f1/${season}/${round}/driverStandings.json`
     
-    let response
-    let lastError
+    console.log('Fetching from Jolpica F1 API:', jolpicaUrl)
     
-    // Try each URL until one works
-    for (const url of apiUrls) {
-      try {
-        console.log('Trying F1 API:', url)
-        
-        response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-          }
-        })
-        
-        console.log('API Response status:', response.status)
-        
-        if (response.ok) {
-          console.log('Successfully connected to:', url)
-          break
-        } else {
-          lastError = new Error(`API returned ${response.status}: ${response.statusText}`)
-        }
-      } catch (error) {
-        console.log('Failed to connect to:', url, error)
-        lastError = error
-        continue
+    const response = await fetch(jolpicaUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
       }
-    }
+    })
     
-    if (!response || !response.ok) {
-      throw lastError || new Error('All F1 API endpoints failed - Ergast API is deprecated as of end of 2024')
+    console.log('Jolpica API Response status:', response.status)
+    
+    if (!response.ok) {
+      throw new Error(`Jolpica F1 API returned ${response.status}: ${response.statusText}`)
     }
 
     const data = await response.json()
@@ -91,10 +71,10 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error fetching driver standings from Ergast API:', error)
+    console.error('Error fetching driver standings from Jolpica F1 API:', error)
     return NextResponse.json(
       { 
-        error: 'Failed to fetch driver standings from Ergast API',
+        error: 'Failed to fetch driver standings from Jolpica F1 API',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
