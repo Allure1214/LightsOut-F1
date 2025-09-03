@@ -151,7 +151,7 @@ interface DriversPageProps {
 }
 
 export default async function DriversPage({ searchParams }: DriversPageProps) {
-  const selectedSeason = searchParams.season || '2024'
+  const selectedSeason = searchParams.season || '2025'
   let selectedRound = searchParams.round || 'current'
   
   // Validate round against season - if round is higher than races in season, reset to 'current'

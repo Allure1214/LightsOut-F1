@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const season = searchParams.get('season') || '2024'
+    const season = searchParams.get('season') || '2025'
     const round = searchParams.get('round') || 'current'
 
     // Fetch driver standings from Jolpica F1 API
