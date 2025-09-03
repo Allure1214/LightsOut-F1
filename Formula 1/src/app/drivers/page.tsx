@@ -28,6 +28,7 @@ interface DriverStandingsResponse {
   season: number
   round: string
   standings: DriverStanding[]
+  note?: string
 }
 
 async function getDriverStandings(): Promise<DriverStandingsResponse> {
@@ -82,7 +83,7 @@ function getNationalityFlag(nationality: string): string {
 }
 
 export default async function DriversPage() {
-  const { season, round, standings } = await getDriverStandings()
+  const { season, round, standings, note } = await getDriverStandings()
 
   return (
     <div className="space-y-8">
@@ -103,6 +104,11 @@ export default async function DriversPage() {
           <Badge variant="outline">
             Round {round}
           </Badge>
+          {note && (
+            <Badge variant="secondary" className="text-xs">
+              {note}
+            </Badge>
+          )}
         </div>
       </div>
 
