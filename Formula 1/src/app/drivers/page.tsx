@@ -253,32 +253,7 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
       </Card>
 
       {/* Championship Info */}
-      <div className="grid md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Points System</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span>1st Place:</span>
-                <span className="font-semibold">25 points</span>
-              </div>
-              <div className="flex justify-between">
-                <span>2nd Place:</span>
-                <span className="font-semibold">18 points</span>
-              </div>
-              <div className="flex justify-between">
-                <span>3rd Place:</span>
-                <span className="font-semibold">15 points</span>
-              </div>
-              <div className="flex justify-between">
-                <span>4th-10th:</span>
-                <span className="font-semibold">12-1 points</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid md:grid-cols-2 gap-6">
 
         <Card>
           <CardHeader>
