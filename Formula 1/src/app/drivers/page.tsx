@@ -1,6 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Trophy, Flag, Calendar } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Trophy, Flag, Calendar, ChevronDown } from 'lucide-react'
+import { SeasonSelector } from '@/components/SeasonSelector'
 
 interface DriverStanding {
   position: number
@@ -31,8 +33,13 @@ interface DriverStandingsResponse {
   note?: string
 }
 
-async function getDriverStandings(): Promise<DriverStandingsResponse> {
-  const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/drivers/standings`, {
+async function getDriverStandings(season?: string): Promise<DriverStandingsResponse> {
+  const url = new URL(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/drivers/standings`)
+  if (season) {
+    url.searchParams.set('season', season)
+  }
+  
+  const res = await fetch(url.toString(), {
     next: { revalidate: 3600 } // Revalidate every hour
   })
   
@@ -83,11 +90,16 @@ function getNationalityFlag(nationality: string): string {
   return flags[nationality] || '🏁'
 }
 
-export default async function DriversPage() {
+interface DriversPageProps {
+  searchParams: { season?: string }
+}
+
+export default async function DriversPage({ searchParams }: DriversPageProps) {
+  const selectedSeason = searchParams.season || '2024'
   let season, round, standings, note
   
   try {
-    const data = await getDriverStandings()
+    const data = await getDriverStandings(selectedSeason)
     season = data.season
     round = data.round
     standings = data.standings
@@ -147,10 +159,7 @@ export default async function DriversPage() {
           {season} Formula 1 World Championship
         </p>
         <div className="flex items-center justify-center gap-4 mt-4">
-          <Badge variant="outline" className="flex items-center gap-1">
-            <Calendar className="w-4 h-4" />
-            Season {season}
-          </Badge>
+          <SeasonSelector currentSeason={season} />
           <Badge variant="outline">
             Round {round}
           </Badge>
