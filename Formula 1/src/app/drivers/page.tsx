@@ -70,6 +70,7 @@ function getNationalityFlag(nationality: string): string {
     'Dutch': '🇳🇱',
     'Spanish': '🇪🇸',
     'Monégasque': '🇲🇨',
+    'Monegasque': '🇲🇨', // Alternative spelling without accent
     'Mexican': '🇲🇽',
     'Australian': '🇦🇺',
     'Canadian': '🇨🇦',
@@ -149,9 +150,115 @@ function getNationalityFlag(nationality: string): string {
   
   // Handle case variations and common aliases
   const normalizedNationality = nationality?.trim() || ''
-  const flag = flags[normalizedNationality] || flags[normalizedNationality.toLowerCase()] || flags[normalizedNationality.toUpperCase()]
+  
+  // Try exact match first
+  let flag = flags[normalizedNationality]
+  
+  // If no exact match, try case variations
+  if (!flag) {
+    flag = flags[normalizedNationality.toLowerCase()] || 
+           flags[normalizedNationality.toUpperCase()] ||
+           flags[normalizedNationality.charAt(0).toUpperCase() + normalizedNationality.slice(1).toLowerCase()]
+  }
+  
+  // Debug logging (remove in production)
+  if (!flag) {
+    console.log(`No flag found for nationality: "${normalizedNationality}"`)
+  }
   
   return flag || '🏁'
+}
+
+function getCountryCode(nationality: string): string {
+  const countryCodes: { [key: string]: string } = {
+    'British': 'GB',
+    'Dutch': 'NL',
+    'Spanish': 'ES',
+    'Monégasque': 'MC',
+    'Monegasque': 'MC',
+    'Mexican': 'MX',
+    'Australian': 'AU',
+    'Canadian': 'CA',
+    'French': 'FR',
+    'German': 'DE',
+    'Japanese': 'JP',
+    'Finnish': 'FI',
+    'Danish': 'DK',
+    'Thai': 'TH',
+    'Chinese': 'CN',
+    'American': 'US',
+    'Italian': 'IT',
+    'Brazilian': 'BR',
+    'Argentine': 'AR',
+    'South African': 'ZA',
+    'Austrian': 'AT',
+    'Swiss': 'CH',
+    'Belgian': 'BE',
+    'New Zealander': 'NZ',
+    'Venezuelan': 'VE',
+    'Russian': 'RU',
+    'Portuguese': 'PT',
+    'Polish': 'PL',
+    'Czech': 'CZ',
+    'Hungarian': 'HU',
+    'Swedish': 'SE',
+    'Norwegian': 'NO',
+    'Indian': 'IN',
+    'Colombian': 'CO',
+    'Chilean': 'CL',
+    'Uruguayan': 'UY',
+    'Peruvian': 'PE',
+    'Ecuadorian': 'EC',
+    'Paraguayan': 'PY',
+    'Bolivian': 'BO',
+    'Croatian': 'HR',
+    'Slovenian': 'SI',
+    'Slovak': 'SK',
+    'Romanian': 'RO',
+    'Bulgarian': 'BG',
+    'Greek': 'GR',
+    'Turkish': 'TR',
+    'Israeli': 'IL',
+    'Lebanese': 'LB',
+    'Jordanian': 'JO',
+    'Emirati': 'AE',
+    'Saudi': 'SA',
+    'Qatari': 'QA',
+    'Kuwaiti': 'KW',
+    'Bahraini': 'BH',
+    'Omani': 'OM',
+    'Yemeni': 'YE',
+    'Iraqi': 'IQ',
+    'Iranian': 'IR',
+    'Afghan': 'AF',
+    'Pakistani': 'PK',
+    'Bangladeshi': 'BD',
+    'Sri Lankan': 'LK',
+    'Nepalese': 'NP',
+    'Bhutanese': 'BT',
+    'Maldivian': 'MV',
+    'Indonesian': 'ID',
+    'Malaysian': 'MY',
+    'Singaporean': 'SG',
+    'Filipino': 'PH',
+    'Vietnamese': 'VN',
+    'Cambodian': 'KH',
+    'Laotian': 'LA',
+    'Myanmar': 'MM',
+    'Korean': 'KR',
+    'North Korean': 'KP',
+    'Mongolian': 'MN',
+    'Taiwanese': 'TW',
+    'Hong Kong': 'HK',
+    'Macanese': 'MO'
+  }
+  
+  const normalizedNationality = nationality?.trim() || ''
+  return countryCodes[normalizedNationality] || 
+         countryCodes[normalizedNationality.toLowerCase()] || 
+         countryCodes[normalizedNationality.toUpperCase()] ||
+         countryCodes[normalizedNationality.charAt(0).toUpperCase() + normalizedNationality.slice(1).toLowerCase()] ||
+         'XX'
 }
 
 // Get the actual number of races for each season (same as RoundSelector)
@@ -354,9 +461,14 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
                     </td>
                     <td className="p-3">
                       <div className="flex items-center gap-3">
-                        <span className="text-2xl">
-                          {getNationalityFlag(standing.driver.nationality)}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-3xl" title={`${standing.driver.nationality} flag`}>
+                            {getNationalityFlag(standing.driver.nationality)}
+                          </span>
+                          <span className="text-xs font-mono bg-gray-100 px-1 py-0.5 rounded">
+                            {getCountryCode(standing.driver.nationality)}
+                          </span>
+                        </div>
                         <div>
                           <div className="font-semibold">
                             {standing.driver.firstName} {standing.driver.lastName}
@@ -450,6 +562,25 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
 
       {/* Points System Information */}
       <PointsSystemInfo season={season} />
+
+      {/* Debug Flag Test */}
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle className="text-sm">Flag Test (Debug)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4 text-sm">
+            <div>🇦🇺 Australian</div>
+            <div>🇬🇧 British</div>
+            <div>🇳🇱 Dutch</div>
+            <div>🇲🇨 Monegasque</div>
+            <div>🇪🇸 Spanish</div>
+            <div>🇫🇷 French</div>
+            <div>🇩🇪 German</div>
+            <div>🇮🇹 Italian</div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
