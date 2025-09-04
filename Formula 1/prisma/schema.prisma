@@ -1,0 +1,227 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  comments      Comment[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// F1 Data Models
+model Season {
+  id        Int      @id
+  year      Int      @unique
+  races     Race[]
+  drivers   DriverSeason[]
+  teams     TeamSeason[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Driver {
+  id          String   @id @default(cuid())
+  driverId    String   @unique // Ergast API ID
+  code        String?  @unique
+  firstName   String
+  lastName    String
+  nationality String
+  dateOfBirth DateTime?
+  url         String?
+  image       String?
+  seasons     DriverSeason[]
+  results     Result[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("drivers")
+}
+
+model Team {
+  id        String   @id @default(cuid())
+  teamId    String   @unique // Ergast API ID
+  name      String
+  nationality String?
+  url       String?
+  logo      String?
+  seasons   TeamSeason[]
+  results   Result[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("teams")
+}
+
+model Circuit {
+  id        String   @id @default(cuid())
+  circuitId String   @unique // Ergast API ID
+  name      String
+  country   String
+  locality  String?
+  lat       Float?
+  lng       Float?
+  url       String?
+  image     String?
+  races     Race[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("circuits")
+}
+
+model Race {
+  id        String   @id @default(cuid())
+  raceId    String   @unique // Ergast API ID
+  seasonId  Int
+  round     Int
+  name      String
+  date      DateTime
+  time      String?
+  url       String?
+  circuitId String
+  season    Season   @relation(fields: [seasonId], references: [id])
+  circuit   Circuit  @relation(fields: [circuitId], references: [id])
+  results   Result[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("races")
+}
+
+model Result {
+  id           String   @id @default(cuid())
+  raceId       String
+  driverId     String
+  teamId       String
+  position     Int?
+  positionText String?
+  points       Float
+  grid         Int?
+  laps         Int?
+  status       String?
+  time         String?
+  fastestLap   Boolean  @default(false)
+  fastestLapTime String?
+  fastestLapSpeed Float?
+  race         Race     @relation(fields: [raceId], references: [id])
+  driver       Driver   @relation(fields: [driverId], references: [id])
+  team         Team     @relation(fields: [teamId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("results")
+}
+
+model DriverSeason {
+  id       String @id @default(cuid())
+  seasonId Int
+  driverId String
+  points   Float  @default(0)
+  position Int?
+  wins     Int    @default(0)
+  season   Season @relation(fields: [seasonId], references: [id])
+  driver   Driver @relation(fields: [driverId], references: [id])
+
+  @@unique([seasonId, driverId])
+  @@map("driver_seasons")
+}
+
+model TeamSeason {
+  id       String @id @default(cuid())
+  seasonId Int
+  teamId   String
+  points   Float  @default(0)
+  position Int?
+  wins     Int    @default(0)
+  season   Season @relation(fields: [seasonId], references: [id])
+  team     Team   @relation(fields: [teamId], references: [id])
+
+  @@unique([seasonId, teamId])
+  @@map("team_seasons")
+}
+
+// News and Articles
+model Article {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  content     String    @db.Text
+  excerpt     String?
+  author      String?
+  source      String?   // 'custom', 'f1', 'autosport', 'racefans'
+  sourceUrl   String?
+  image       String?
+  publishedAt DateTime
+  tags        String[]
+  comments    Comment[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("articles")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  articleId String
+  userId    String
+  parentId  String?  // For nested comments
+  article   Article  @relation(fields: [articleId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentReplies")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("comments")
+}

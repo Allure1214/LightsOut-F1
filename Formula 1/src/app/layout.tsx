@@ -1,0 +1,79 @@
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: 'LightsOut - Statistics, News & Articles',
+  description: 'Comprehensive Formula 1 website featuring real-time statistics, news, and articles',
+  keywords: ['Formula 1', 'F1', 'racing', 'statistics', 'news', 'drivers', 'teams'],
+  authors: [{ name: 'Formula 1 Website' }],
+  openGraph: {
+    title: 'LightsOut - Statistics, News & Articles',
+    description: 'Comprehensive Formula 1 website featuring real-time statistics, news, and articles',
+    type: 'website',
+  },
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>
+        <div className="min-h-screen bg-background">
+          <header className="border-b">
+            <div className="container mx-auto px-4 py-4">
+              <nav className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 f1-bg-red rounded-lg flex items-center justify-center shadow-lg">
+                    <span className="text-white font-bold text-lg">F1</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <h1 className="text-2xl font-bold f1-red leading-tight">LightsOut</h1>
+                  </div>
+                </div>
+                <div className="hidden md:flex items-center space-x-6">
+                  <a href="/" className="text-foreground hover:text-primary transition-colors">
+                    Home
+                  </a>
+                  <a href="/drivers" className="text-foreground hover:text-primary transition-colors">
+                    Drivers
+                  </a>
+                  <a href="/teams" className="text-foreground hover:text-primary transition-colors">
+                    Teams
+                  </a>
+                  <a href="/races" className="text-foreground hover:text-primary transition-colors">
+                    Races
+                  </a>
+                  <a href="/news" className="text-foreground hover:text-primary transition-colors">
+                    News
+                  </a>
+                </div>
+              </nav>
+            </div>
+          </header>
+          <main className="container mx-auto px-4 py-8">
+            {children}
+          </main>
+          <footer className="border-t mt-16">
+            <div className="container mx-auto px-4 py-8">
+              <div className="text-center text-muted-foreground">
+                <p>&copy; 2025 LightsOut Website. All rights reserved.</p>
+                <p className="mt-2 text-sm">
+                  Data provided by{' '}
+                  <a href="http://ergast.com/mrd/" className="text-primary hover:underline">
+                    Ergast API
+                  </a>
+                </p>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </body>
+    </html>
+  )
+}
