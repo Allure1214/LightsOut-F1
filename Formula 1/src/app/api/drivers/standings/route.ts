@@ -62,8 +62,6 @@ export async function GET(request: NextRequest) {
       }
     }))
 
-    console.log(`Successfully processed ${transformedStandings.length} driver standings`)
-
     return NextResponse.json({
       season: parseInt(season),
       round: round,
