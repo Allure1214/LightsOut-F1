@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Image from 'next/image'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -23,17 +24,28 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/images/Logo.jpg" />
+        <link rel="apple-touch-icon" href="/images/Logo.jpg" />
+      </head>
       <body className={inter.className}>
         <div className="min-h-screen bg-background">
           <header className="border-b">
             <div className="container mx-auto px-4 py-4">
               <nav className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 f1-bg-red rounded-lg flex items-center justify-center shadow-lg">
-                    <span className="text-white font-bold text-lg">F1</span>
+                  <div className="w-12 h-12 rounded-lg overflow-hidden shadow-lg">
+                    <Image
+                      src="/images/Logo.jpg"
+                      alt="LightsOut Logo"
+                      width={48}
+                      height={48}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div className="flex flex-col">
                     <h1 className="text-2xl font-bold f1-red leading-tight">LightsOut</h1>
+                    <p className="text-sm text-muted-foreground">Statistics, News & Articles</p>
                   </div>
                 </div>
                 <div className="hidden md:flex items-center space-x-6">
