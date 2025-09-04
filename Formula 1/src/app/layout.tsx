@@ -25,8 +25,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/images/Logo.jpg" />
-        <link rel="apple-touch-icon" href="/images/Logo.jpg" />
+        <link rel="icon" href="/images/Favicon.png" />
+        <link rel="apple-touch-icon" href="/images/Favicon.png" />
       </head>
       <body className={inter.className}>
         <div className="min-h-screen bg-background">
@@ -36,7 +36,7 @@ export default function RootLayout({
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 rounded-lg overflow-hidden shadow-lg">
                     <Image
-                      src="/images/Logo.jpg"
+                      src="/images/Logo.png"
                       alt="LightsOut Logo"
                       width={48}
                       height={48}
