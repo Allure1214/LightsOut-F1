@@ -1,11 +1,12 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Trophy, Flag, Calendar, ChevronDown, Medal, TrendingUp, Users, Award } from 'lucide-react'
+import { Trophy, Flag, Calendar, ChevronDown, Medal, TrendingUp, Users, Award, ExternalLink, Star, Zap } from 'lucide-react'
 import { SeasonSelector } from '@/components/SeasonSelector'
 import { RoundSelector } from '@/components/RoundSelector'
 import { PointsSystemInfo } from '@/components/PointsSystemInfo'
 import { DriverStandingsSkeleton } from '@/components/DriverStandingsSkeleton'
+import { DriverStandingsTable } from '@/components/DriverStandingsTable'
 import { Suspense } from 'react'
 
 interface DriverStanding {
@@ -58,20 +59,6 @@ async function getDriverStandings(season?: string, round?: string): Promise<Driv
   return res.json()
 }
 
-function getPositionColor(position: number): string {
-  if (position === 1) return 'text-yellow-600 bg-gradient-to-br from-yellow-100 to-yellow-200 border-yellow-300'
-  if (position === 2) return 'text-gray-600 bg-gradient-to-br from-gray-100 to-gray-200 border-gray-300'
-  if (position === 3) return 'text-amber-600 bg-gradient-to-br from-amber-100 to-amber-200 border-amber-300'
-  if (position <= 10) return 'text-blue-600 bg-gradient-to-br from-blue-100 to-blue-200 border-blue-300'
-  return 'text-gray-500 bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200'
-}
-
-function getPositionIcon(position: number) {
-  if (position === 1) return <Trophy className="w-4 h-4" />
-  if (position === 2) return <Medal className="w-4 h-4" />
-  if (position === 3) return <Award className="w-4 h-4" />
-  return null
-}
 
 
 
@@ -258,144 +245,34 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
           </div>
         </div>
 
-      {/* Enhanced Standings Table */}
-      <Card className="overflow-hidden shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-red-50 to-red-100 border-b">
-          <CardTitle className="flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-red-600" />
-            Championship Standings
-          </CardTitle>
-          <CardDescription className="text-red-700">
-            Points and positions after Round {round === 'current' ? 'Latest' : round}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-0">
-          {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-muted/50">
-                <tr>
-                  <th className="text-left p-4 font-semibold text-muted-foreground">Pos</th>
-                  <th className="text-left p-4 font-semibold text-muted-foreground">Driver</th>
-                  <th className="text-left p-4 font-semibold text-muted-foreground">Team</th>
-                  <th className="text-center p-4 font-semibold text-muted-foreground">Points</th>
-                  <th className="text-center p-4 font-semibold text-muted-foreground">Wins</th>
-                </tr>
-              </thead>
-              <tbody>
-                {standings.map((standing, index) => (
-                  <tr 
-                    key={standing.driver.driverId} 
-                    className={`border-b transition-all duration-200 hover:bg-gradient-to-r hover:from-muted/30 hover:to-muted/10 ${
-                      index % 2 === 0 ? 'bg-background' : 'bg-muted/20'
-                    }`}
-                  >
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <Badge 
-                          className={`w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 shadow-sm ${getPositionColor(standing.position)}`}
-                        >
-                          {getPositionIcon(standing.position)}
-                          <span className="ml-1">{standing.position}</span>
-                        </Badge>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <div className="space-y-1">
-                        <div className="font-semibold text-lg">
-                          {standing.driver.firstName} {standing.driver.lastName}
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Flag className="w-3 h-3" />
-                          <span>{standing.driver.nationality}</span>
-                          {standing.driver.code && (
-                            <Badge variant="outline" className="text-xs px-2 py-0.5">
-                              {standing.driver.code}
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <div className="space-y-1">
-                        <div className="font-medium text-base">{standing.team.name}</div>
-                        {standing.team.nationality && (
-                          <div className="text-sm text-muted-foreground">
-                            {standing.team.nationality}
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                    <td className="p-4 text-center">
-                      <div className="space-y-1">
-                        <div className="text-3xl font-bold bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent">
-                          {standing.points.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-muted-foreground">points</div>
-                      </div>
-                    </td>
-                    <td className="p-4 text-center">
-                      <div className="space-y-1">
-                        <div className="text-2xl font-bold text-green-600">
-                          {standing.wins}
-                        </div>
-                        <div className="text-xs text-muted-foreground">wins</div>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {/* Quick Stats Summary */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card className="text-center p-4 bg-gradient-to-br from-red-50 to-red-100 border-red-200">
+          <div className="text-2xl font-bold text-red-600">{standings.length}</div>
+          <div className="text-sm text-muted-foreground">Drivers</div>
+        </Card>
+        <Card className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+          <div className="text-2xl font-bold text-blue-600">
+            {new Set(standings.map(s => s.team.teamId)).size}
           </div>
+          <div className="text-sm text-muted-foreground">Teams</div>
+        </Card>
+        <Card className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+          <div className="text-2xl font-bold text-green-600">
+            {standings.reduce((sum, s) => sum + s.wins, 0)}
+          </div>
+          <div className="text-sm text-muted-foreground">Total Wins</div>
+        </Card>
+        <Card className="text-center p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
+          <div className="text-2xl font-bold text-yellow-600">
+            {standings.reduce((sum, s) => sum + s.points, 0).toLocaleString()}
+          </div>
+          <div className="text-sm text-muted-foreground">Total Points</div>
+        </Card>
+      </div>
 
-          {/* Mobile Card View */}
-          <div className="md:hidden space-y-3 p-4">
-            {standings.map((standing, index) => (
-              <Card key={standing.driver.driverId} className={`p-4 transition-all duration-200 hover:shadow-md ${
-                standing.position <= 3 ? 'ring-2 ring-yellow-200 bg-gradient-to-r from-yellow-50 to-yellow-100' : ''
-              }`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Badge 
-                      className={`w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 shadow-sm ${getPositionColor(standing.position)}`}
-                    >
-                      {getPositionIcon(standing.position)}
-                      <span className="ml-1">{standing.position}</span>
-                    </Badge>
-                    <div>
-                      <div className="font-semibold text-base">
-                        {standing.driver.firstName} {standing.driver.lastName}
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Flag className="w-3 h-3" />
-                        <span>{standing.driver.nationality}</span>
-                        {standing.driver.code && (
-                          <Badge variant="outline" className="text-xs px-1 py-0.5">
-                            {standing.driver.code}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent">
-                      {standing.points.toLocaleString()}
-                    </div>
-                    <div className="text-xs text-muted-foreground">points</div>
-                  </div>
-                </div>
-                <div className="mt-3 flex items-center justify-between text-sm">
-                  <div className="text-muted-foreground">{standing.team.name}</div>
-                  <div className="flex items-center gap-1 text-green-600 font-semibold">
-                    <Trophy className="w-3 h-3" />
-                    {standing.wins} wins
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Enhanced Standings Table */}
+      <DriverStandingsTable standings={standings} round={round} />
 
       {/* Enhanced Championship Info */}
       <div className="grid md:grid-cols-3 gap-6">
@@ -480,6 +357,18 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
                 <span className="text-sm text-muted-foreground">Race Winners:</span>
                 <span className="font-bold text-lg text-green-600">
                   {standings.filter(s => s.wins > 0).length}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Total Wins:</span>
+                <span className="font-bold text-lg text-green-600">
+                  {standings.reduce((sum, s) => sum + s.wins, 0)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Avg Points:</span>
+                <span className="font-bold text-lg text-green-600">
+                  {Math.round(standings.reduce((sum, s) => sum + s.points, 0) / standings.length)}
                 </span>
               </div>
             </div>
