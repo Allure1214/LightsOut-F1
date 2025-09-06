@@ -130,9 +130,7 @@ export async function GET(
           
           const careerPromises = []
           for (let year = careerStartYear; year <= currentYear; year++) {
-            // Include all years up to and including the current year, but skip the selected season
-            // since we already have that data from the main API call
-            if (year !== parseInt(season)) {
+            if (year !== parseInt(season)) { // Skip current season as we already have it
               careerPromises.push(
                                  fetch(`https://api.jolpi.ca/ergast/f1/${year}/drivers/${driverId}/results.json`, {
                    method: 'GET',
@@ -182,7 +180,6 @@ export async function GET(
           })
           
           console.log(`Successfully fetched data from ${successfulYears} years out of ${careerPromises.length} attempted`)
-          console.log(`Career years processed: ${careerStartYear} to ${currentYear}, excluding season ${season}`)
           
           // Calculate championship titles by checking final standings for each year
           const championshipPromises = []
@@ -209,21 +206,17 @@ export async function GET(
             )
           )
           
-          championshipResults.forEach((result, index) => {
+          championshipResults.forEach((result) => {
             if (result.status === 'fulfilled' && result.value) {
-              const year = careerStartYear + index
               const standings = result.value.MRData?.StandingsTable?.StandingsLists?.[0]?.DriverStandings || []
               const driverStanding = standings.find((standing: any) => 
                 standing.Driver.driverId === driverId && parseInt(standing.position) === 1
               )
               if (driverStanding) {
                 championshipTitles++
-                console.log(`Championship title found for ${year}`)
               }
             }
           })
-          
-          console.log(`Total championship titles: ${championshipTitles}`)
           
         } catch (error) {
           console.error('Error fetching career data:', error)
