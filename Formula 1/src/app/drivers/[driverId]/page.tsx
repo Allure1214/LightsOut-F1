@@ -29,7 +29,7 @@ interface DriverStats {
   totalRaces: number
   totalPoles: number
   totalFastestLaps: number
-  careerBest: number
+  championshipTitles: number
   currentSeason: {
     wins: number
     podiums: number
@@ -158,48 +158,6 @@ export default async function DriverDetailsPage({ params, searchParams }: Driver
             </CardHeader>
           </Card>
 
-          {/* Quick Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
-              <CardContent className="p-4 text-center">
-                <Trophy className="w-8 h-8 text-yellow-600 mx-auto mb-2" />
-                <div className="text-2xl font-bold text-yellow-700">
-                  {driverStats?.totalWins || 0}
-                </div>
-                <div className="text-sm text-yellow-600">Total Wins</div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200">
-              <CardContent className="p-4 text-center">
-                <Award className="w-8 h-8 text-gray-600 mx-auto mb-2" />
-                <div className="text-2xl font-bold text-gray-700">
-                  {driverStats?.totalPodiums || 0}
-                </div>
-                <div className="text-sm text-gray-600">Podiums</div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-              <CardContent className="p-4 text-center">
-                <BarChart3 className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                <div className="text-2xl font-bold text-blue-700">
-                  {driverStats?.totalPoints || 0}
-                </div>
-                <div className="text-sm text-blue-600">Total Points</div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-              <CardContent className="p-4 text-center">
-                <Activity className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                <div className="text-2xl font-bold text-green-700">
-                  {driverStats?.totalRaces || 0}
-                </div>
-                <div className="text-sm text-green-600">Races</div>
-              </CardContent>
-            </Card>
-          </div>
 
           {/* Current Season Performance */}
           {driverStats && (
@@ -357,9 +315,9 @@ export default async function DriverDetailsPage({ params, searchParams }: Driver
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Career Best</span>
+                  <span className="text-muted-foreground">Championship Titles</span>
                   <span className="font-bold text-2xl text-yellow-600">
-                    {driverStats?.careerBest || 'N/A'}
+                    {driverStats?.championshipTitles || 0}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">

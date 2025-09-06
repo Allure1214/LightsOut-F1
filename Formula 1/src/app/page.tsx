@@ -12,7 +12,7 @@ export default function HomePage() {
         {/* F1 Background Image */}
         <div className="relative h-96 md:h-[500px] overflow-hidden rounded-lg">
           <Image
-            src="/F1.jpg"
+            src="/images/F1.jpg"
             alt="Formula 1 Las Vegas Grand Prix - Night race with F1 cars on track"
             fill
             className="object-cover object-bottom"

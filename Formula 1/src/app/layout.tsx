@@ -6,6 +6,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('http://localhost:3000'),
   title: 'LightsOut - Statistics, News & Articles',
   description: 'Comprehensive Formula 1 website featuring real-time statistics, news, and articles',
   keywords: ['Formula 1', 'F1', 'racing', 'statistics', 'news', 'drivers', 'teams'],

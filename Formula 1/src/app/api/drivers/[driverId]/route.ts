@@ -114,14 +114,14 @@ export async function GET(
           }))
         }
 
-        // Fetch career statistics (all seasons)
-        let careerWins = 0
-        let careerPodiums = 0
-        let careerPoints = 0
-        let careerRaces = 0
-        let careerPoles = 0
-        let careerFastestLaps = 0
-        let careerBest = 1
+         // Fetch career statistics (all seasons)
+         let careerWins = 0
+         let careerPodiums = 0
+         let careerPoints = 0
+         let careerRaces = 0
+         let careerPoles = 0
+         let careerFastestLaps = 0
+         let championshipTitles = 0
 
         try {
           // Get complete career data from driver's debut year onwards
@@ -130,7 +130,9 @@ export async function GET(
           
           const careerPromises = []
           for (let year = careerStartYear; year <= currentYear; year++) {
-            if (year !== parseInt(season)) { // Skip current season as we already have it
+            // Include all years up to and including the current year, but skip the selected season
+            // since we already have that data from the main API call
+            if (year !== parseInt(season)) {
               careerPromises.push(
                                  fetch(`https://api.jolpi.ca/ergast/f1/${year}/drivers/${driverId}/results.json`, {
                    method: 'GET',
@@ -149,7 +151,7 @@ export async function GET(
               Promise.race([
                 promise,
                 new Promise((_, reject) => 
-                  setTimeout(() => reject(new Error('Timeout')), 1000000) // 10 second timeout per year
+                  setTimeout(() => reject(new Error('Timeout')), 1000000)
                 )
               ]).catch(error => {
                 console.log(`API call failed for a year: ${error.message}`)
@@ -175,13 +177,54 @@ export async function GET(
                 if (position >= 1 && position <= 3) careerPodiums++
                 if (race.Results?.[0]?.grid === '1') careerPoles++
                 if (race.Results?.[0]?.FastestLap?.rank === '1') careerFastestLaps++
-                
-                if (position > 0 && position < careerBest) careerBest = position
               })
             }
           })
           
           console.log(`Successfully fetched data from ${successfulYears} years out of ${careerPromises.length} attempted`)
+          console.log(`Career years processed: ${careerStartYear} to ${currentYear}, excluding season ${season}`)
+          
+          // Calculate championship titles by checking final standings for each year
+          const championshipPromises = []
+          for (let year = careerStartYear; year <= currentYear; year++) {
+            championshipPromises.push(
+              fetch(`https://api.jolpi.ca/ergast/f1/${year}/driverStandings.json`, {
+                method: 'GET',
+                headers: {
+                  'Accept': 'application/json',
+                  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                }
+              }).then(res => res.ok ? res.json() : null).catch(() => null)
+            )
+          }
+          
+          const championshipResults = await Promise.allSettled(
+            championshipPromises.map(promise => 
+              Promise.race([
+                promise,
+                new Promise((_, reject) => 
+                  setTimeout(() => reject(new Error('Timeout')), 10000)
+                )
+              ]).catch(() => null)
+            )
+          )
+          
+          championshipResults.forEach((result, index) => {
+            if (result.status === 'fulfilled' && result.value) {
+              const year = careerStartYear + index
+              const standings = result.value.MRData?.StandingsTable?.StandingsLists?.[0]?.DriverStandings || []
+              const driverStanding = standings.find((standing: any) => 
+                standing.Driver.driverId === driverId && parseInt(standing.position) === 1
+              )
+              if (driverStanding) {
+                championshipTitles++
+                console.log(`Championship title found for ${year}`)
+              }
+            }
+          })
+          
+          console.log(`Total championship titles: ${championshipTitles}`)
+          
         } catch (error) {
           console.error('Error fetching career data:', error)
           // Don't fallback - let the career data remain as accumulated from successful API calls
@@ -217,7 +260,7 @@ export async function GET(
             totalRaces: careerRaces,
             totalPoles: careerPoles,
             totalFastestLaps: careerFastestLaps,
-            careerBest: careerBest,
+            championshipTitles: championshipTitles,
             currentSeason: {
               wins: totalWins,
               podiums: currentSeasonPodiums,
