@@ -78,8 +78,8 @@ export default function RootLayout({
                 <p>&copy; 2025 LightsOut Website. All rights reserved.</p>
                 <p className="mt-2 text-sm">
                   Data provided by{' '}
-                  <a href="http://ergast.com/mrd/" className="text-primary hover:underline">
-                    Ergast API
+                  <a href="https://api.jolpi.ca/ergast/" className="text-primary hover:underline">
+                    Jolpica F1 API
                   </a>
                 </p>
               </div>

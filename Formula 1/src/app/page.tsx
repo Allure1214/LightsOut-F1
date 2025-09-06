@@ -72,7 +72,7 @@ export default function HomePage() {
           </CardHeader>
           <CardContent>
             <Button variant="outline" className="w-full">
-              View Teams
+            <a href="/teams">View Standings</a>
             </Button>
           </CardContent>
         </Card>
@@ -142,7 +142,7 @@ export default function HomePage() {
         <div className="grid md:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl f1-red">2024</CardTitle>
+              <CardTitle className="text-2xl f1-red">2025</CardTitle>
               <CardDescription>Current Season</CardDescription>
             </CardHeader>
             <CardContent>
