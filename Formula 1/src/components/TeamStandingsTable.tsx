@@ -42,18 +42,19 @@ function getPositionIcon(position: number) {
 export function TeamStandingsTable({ standings, round }: TeamStandingsTableProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const currentSeason = searchParams.get('season') || '2024'
+  const currentSeason = searchParams.get('season') || '2025'
 
   const handleTeamClick = (team: TeamStanding) => {
-    // For now, we'll just show team info in a modal or navigate to a team page
-    // This could be expanded to show team details
-    console.log('Team clicked:', team.team.name)
+    const params = new URLSearchParams()
+    if (currentSeason) params.set('season', currentSeason)
+    router.push(`/teams/${team.team.teamId}?${params.toString()}`)
   }
 
   const handleActionClick = (e: React.MouseEvent, team: TeamStanding) => {
     e.stopPropagation()
-    // For now, we'll just show team info in a modal or navigate to a team page
-    console.log('Team action clicked:', team.team.name)
+    const params = new URLSearchParams()
+    if (currentSeason) params.set('season', currentSeason)
+    router.push(`/teams/${team.team.teamId}?${params.toString()}`)
   }
 
   return (
