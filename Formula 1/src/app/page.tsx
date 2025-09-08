@@ -87,7 +87,7 @@ export default function HomePage() {
           </CardHeader>
           <CardContent>
             <Button variant="outline" className="w-full">
-              View Calendar
+            <a href="/races">View Calendar</a>
             </Button>
           </CardContent>
         </Card>
