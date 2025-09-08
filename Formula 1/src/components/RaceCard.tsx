@@ -3,9 +3,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Calendar, Flag, Clock, MapPin, ExternalLink, ChevronRight, Trophy, Users, Zap, Target, ChevronDown } from 'lucide-react'
+import { Calendar, Flag, Clock, MapPin, ExternalLink, ChevronRight, Trophy, Users, Zap, Target, ChevronDown, Award } from 'lucide-react'
 import { SessionCard } from './SessionCard'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import React from 'react'
 
 interface Session {
   name: string
@@ -121,12 +122,56 @@ function getDaysUntilRace(dateString: string): string {
   return `${daysDiff} days`
 }
 
+function getDetailedCountdown(dateString: string, timeString?: string): string {
+  const now = new Date()
+  let raceDateTime: Date
+  
+  if (timeString) {
+    // Combine date and time for precise countdown
+    raceDateTime = new Date(`${dateString}T${timeString}`)
+  } else {
+    // If no time, assume race starts at 15:00 UTC (typical F1 race time)
+    raceDateTime = new Date(`${dateString}T15:00:00Z`)
+  }
+  
+  const timeDiff = raceDateTime.getTime() - now.getTime()
+  
+  if (timeDiff < 0) return 'Past'
+  
+  const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24))
+  const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+  const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60))
+  const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000)
+  
+  if (days > 0) {
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`
+  } else if (hours > 0) {
+    return `${hours}h ${minutes}m ${seconds}s`
+  } else if (minutes > 0) {
+    return `${minutes}m ${seconds}s`
+  } else {
+    return `${seconds}s`
+  }
+}
+
 export function RaceCard({ race, status }: RaceCardProps) {
   const [isScheduleExpanded, setIsScheduleExpanded] = useState(false)
+  const [currentTime, setCurrentTime] = useState(new Date())
   const daysUntil = getDaysUntilRace(race.date)
+  const detailedCountdown = getDetailedCountdown(race.date, race.time)
   const isPast = status === 'completed'
   const isLive = status === 'live'
   const isUpcoming = status === 'upcoming'
+
+  // Update countdown every second for upcoming races
+  useEffect(() => {
+    if (isUpcoming) {
+      const interval = setInterval(() => {
+        setCurrentTime(new Date())
+      }, 1000)
+      return () => clearInterval(interval)
+    }
+  }, [isUpcoming])
 
   return (
     <Card className={`overflow-hidden shadow-lg transition-all duration-200 hover:shadow-xl ${
@@ -152,18 +197,13 @@ export function RaceCard({ race, status }: RaceCardProps) {
             <Badge variant="outline" className="mb-2">
               {getRaceStatusText(status)}
             </Badge>
-            {isUpcoming && (
-              <div className="text-sm text-muted-foreground">
-                {daysUntil}
-              </div>
-            )}
           </div>
         </div>
       </CardHeader>
       
       <CardContent className="p-6">
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Race Details */}
+          {/* Left Side - Race Details */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <Calendar className="w-5 h-5 text-muted-foreground" />
@@ -194,39 +234,86 @@ export function RaceCard({ race, status }: RaceCardProps) {
                 </div>
               </div>
             </div>
+
+            <div className="flex items-center gap-3">
+              <ExternalLink className="w-5 h-5 text-muted-foreground" />
+              <div>
+                <div className="font-semibold">Race Details</div>
+                <div className="text-sm text-muted-foreground">
+                  <a href={race.url || '#'} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    View Details
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Race Actions */}
+          {/* Right Side - Race Actions in specified order */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-muted-foreground">Race Details</span>
-              <Button variant="outline" size="sm" asChild>
-                <a href={race.url || '#'} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  View Details
-                </a>
-              </Button>
-            </div>
-            
+            {/* Only show session buttons for completed races */}
             {isPast && (
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-muted-foreground">Results</span>
-                <Button variant="outline" size="sm">
-                  <Trophy className="w-4 h-4 mr-2" />
-                  View Results
-                </Button>
-              </div>
+              <>
+                {/* Sprint Qualifying - only show for sprint weekends */}
+                {race.sessions && race.sessions.some(session => session.type === 'sprint') && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-muted-foreground">Sprint Qualifying</span>
+                    <Button variant="outline" size="sm" asChild>
+                      <a href={`/races/${race.round}/sprint-qualifying?season=${new Date(race.date).getFullYear()}`}>
+                        <Zap className="w-4 h-4 mr-2" />
+                        View Sprint Qualifying
+                      </a>
+                    </Button>
+                  </div>
+                )}
+
+                {/* Sprint Results - only show for sprint weekends */}
+                {race.sessions && race.sessions.some(session => session.type === 'sprint') && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-muted-foreground">Sprint Race</span>
+                    <Button variant="outline" size="sm" asChild>
+                      <a href={`/races/${race.round}/sprint?season=${new Date(race.date).getFullYear()}`}>
+                        <Zap className="w-4 h-4 mr-2" />
+                        View Sprint
+                      </a>
+                    </Button>
+                  </div>
+                )}
+
+                {/* Qualifying - show for completed races */}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-muted-foreground">Race Qualifying</span>
+                  <Button variant="outline" size="sm" asChild>
+                    <a href={`/races/${race.round}/qualifying?season=${new Date(race.date).getFullYear()}`}>
+                      <Award className="w-4 h-4 mr-2" />
+                      View Qualifying
+                    </a>
+                  </Button>
+                </div>
+
+                {/* Results - only show for completed races */}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-muted-foreground">Race Result</span>
+                  <Button variant="outline" size="sm" asChild>
+                    <a href={`/races/${race.round}/results?season=${new Date(race.date).getFullYear()}`}>
+                      <Trophy className="w-4 h-4 mr-2" />
+                      View Results
+                    </a>
+                  </Button>
+                </div>
+              </>
             )}
-            
+
+            {/* Countdown for upcoming races */}
             {isUpcoming && (
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-muted-foreground">Countdown</span>
-                <div className="text-sm font-semibold text-blue-600">
-                  {daysUntil}
+                <div className="text-sm font-semibold text-blue-600 font-mono">
+                  {detailedCountdown}
                 </div>
               </div>
             )}
             
+            {/* Live status */}
             {isLive && (
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-muted-foreground">Status</span>
