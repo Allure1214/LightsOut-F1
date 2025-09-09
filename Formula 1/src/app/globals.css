@@ -245,8 +245,17 @@ html {
   border-radius: 4px;
 }
 
-/* Smooth transitions for all interactive elements */
-* {
+/* Smooth transitions for interactive elements - more specific selectors */
+button, 
+a, 
+[role="button"], 
+.hover-lift,
+.group:hover,
+.transition-all,
+.transition-colors,
+.transition-transform,
+.transition-opacity,
+.transition-shadow {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
@@ -275,4 +284,204 @@ html {
 * {
   scrollbar-width: thin;
   scrollbar-color: #E10600 transparent;
+}
+
+/* Driver standings table specific styles */
+.driver-standings-table {
+  /* Ensure table doesn't have unwanted transitions */
+  table, tbody, thead, tr, td, th {
+    transition: none !important;
+  }
+  
+  /* Ensure proper table layout */
+  table {
+    table-layout: auto;
+    border-collapse: collapse;
+  }
+  
+  /* Ensure badges and buttons work properly */
+  .badge, .btn {
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+/* Team standings table specific styles */
+.team-standings-table {
+  /* Ensure table doesn't have unwanted transitions */
+  table, tbody, thead, tr, td, th {
+    transition: none !important;
+  }
+  
+  /* Ensure proper table layout */
+  table {
+    table-layout: auto;
+    border-collapse: collapse;
+  }
+  
+  /* Ensure badges and buttons work properly */
+  .badge, .btn {
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+/* Qualifying results table specific styles */
+.qualifying-results-table {
+  /* Ensure table doesn't have unwanted transitions */
+  table, tbody, thead, tr, td, th {
+    transition: none !important;
+  }
+  
+  /* Ensure proper table layout */
+  table {
+    table-layout: auto;
+    border-collapse: collapse;
+  }
+  
+  /* Ensure badges and buttons work properly */
+  .badge, .btn {
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+/* Sprint results table specific styles */
+.sprint-results-table {
+  /* Ensure table doesn't have unwanted transitions */
+  table, tbody, thead, tr, td, th {
+    transition: none !important;
+  }
+  
+  /* Ensure proper table layout */
+  table {
+    table-layout: auto;
+    border-collapse: collapse;
+  }
+  
+  /* Ensure badges and buttons work properly */
+  .badge, .btn {
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+/* Sprint qualifying results table specific styles */
+.sprint-qualifying-results-table {
+  /* Ensure table doesn't have unwanted transitions */
+  table, tbody, thead, tr, td, th {
+    transition: none !important;
+  }
+  
+  /* Ensure proper table layout */
+  table {
+    table-layout: auto;
+    border-collapse: collapse;
+  }
+  
+  /* Ensure badges and buttons work properly */
+  .badge, .btn {
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+/* Race results table specific styles */
+.race-results-table {
+  /* Ensure table doesn't have unwanted transitions */
+  table, tbody, thead, tr, td, th {
+    transition: none !important;
+  }
+  
+  /* Ensure proper table layout */
+  table {
+    table-layout: auto;
+    border-collapse: collapse;
+  }
+  
+  /* Ensure badges and buttons work properly */
+  .badge, .btn {
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+/* Skeleton components specific styles */
+.qualifying-results-skeleton,
+.sprint-results-skeleton,
+.sprint-qualifying-results-skeleton,
+.race-results-skeleton,
+.team-standings-skeleton,
+.driver-standings-skeleton,
+.race-calendar-skeleton,
+.news-skeleton {
+  /* Ensure skeleton elements don't have unwanted transitions */
+  .skeleton {
+    transition: none !important;
+  }
+  
+  /* Ensure cards don't have weird transitions */
+  .card {
+    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+  
+  /* Ensure grid layouts work properly */
+  .grid {
+    transition: none !important;
+  }
+}
+
+/* Ensure cards don't have weird transitions */
+.card {
+  transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+/* Fix any layout issues with the driver page */
+.driver-page {
+  /* Ensure proper spacing and layout */
+  .container {
+    max-width: 1200px;
+  }
+  
+  /* Ensure tables are responsive */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Fix any layout issues with the team page */
+.team-page {
+  /* Ensure proper spacing and layout */
+  .container {
+    max-width: 1200px;
+  }
+  
+  /* Ensure tables are responsive */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Fix any layout issues with the race page */
+.race-page {
+  /* Ensure proper spacing and layout */
+  .container {
+    max-width: 1200px;
+  }
+  
+  /* Ensure tables are responsive */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Fix any layout issues with the news page */
+.news-page {
+  /* Ensure proper spacing and layout */
+  .container {
+    max-width: 1200px;
+  }
+  
+  /* Ensure tables are responsive */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }

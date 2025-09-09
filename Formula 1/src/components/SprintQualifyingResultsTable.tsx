@@ -75,7 +75,7 @@ function getConstructorName(constructor: Constructor): string {
 
 export function SprintQualifyingResultsTable({ results }: SprintQualifyingResultsTableProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 sprint-qualifying-results-table">
       {/* Sprint Qualifying Format Info */}
       <div className="bg-cyan-50 border border-cyan-200 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-2">

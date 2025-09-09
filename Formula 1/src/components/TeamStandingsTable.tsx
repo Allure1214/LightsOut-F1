@@ -58,7 +58,7 @@ export function TeamStandingsTable({ standings, round }: TeamStandingsTableProps
   }
 
   return (
-    <Card className="overflow-hidden shadow-lg">
+    <Card className="overflow-hidden shadow-lg team-standings-table">
       <CardHeader className="bg-gradient-to-r from-red-50 to-red-100 border-b">
         <CardTitle className="flex items-center gap-2">
           <Trophy className="w-5 h-5 text-red-600" />

@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export function RaceCalendarSkeleton() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 race-calendar-skeleton">
       {/* Header Skeleton */}
       <div className="text-center space-y-6">
         <div className="space-y-4">

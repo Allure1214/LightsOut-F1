@@ -75,7 +75,7 @@ interface RacesPageProps {
 export default async function RacesPage({ searchParams }: RacesPageProps) {
   const selectedSeason = searchParams.season || '2025'
   
-  let season, races
+  let season: number, races: Race[]
   
   try {
     const data = await getRaceSchedule(selectedSeason)
@@ -84,7 +84,9 @@ export default async function RacesPage({ searchParams }: RacesPageProps) {
   } catch (error) {
     // Return error page if API fails
     return (
-      <div className="space-y-8">
+      <div className="min-h-screen race-page">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="space-y-8">
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-2">
             <Calendar className="inline-block w-10 h-10 f1-red mr-3" />
@@ -120,6 +122,8 @@ export default async function RacesPage({ searchParams }: RacesPageProps) {
             </div>
           </CardContent>
         </Card>
+          </div>
+        </div>
       </div>
     )
   }
@@ -127,8 +131,10 @@ export default async function RacesPage({ searchParams }: RacesPageProps) {
   const totalRaces = races.length
 
   return (
-    <Suspense fallback={<RaceCalendarSkeleton />}>
-      <div className="space-y-8">
+    <div className="min-h-screen race-page">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Suspense fallback={<RaceCalendarSkeleton />}>
+          <div className="space-y-8">
         {/* Enhanced Header */}
         <div className="text-center space-y-6">
           <div className="space-y-4">
@@ -158,7 +164,9 @@ export default async function RacesPage({ searchParams }: RacesPageProps) {
 
         {/* Race Calendar with Search */}
         <RaceCalendarClient races={races} season={season} />
+          </div>
+        </Suspense>
       </div>
-    </Suspense>
+    </div>
   )
 }

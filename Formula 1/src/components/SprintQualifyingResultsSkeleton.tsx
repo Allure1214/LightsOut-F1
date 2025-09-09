@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export function SprintQualifyingResultsSkeleton() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 sprint-qualifying-results-skeleton">
       {/* Header Skeleton */}
       <div className="space-y-6">
         <div className="flex items-center gap-4">

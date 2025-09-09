@@ -93,7 +93,7 @@ function getConstructorName(constructor: Constructor): string {
 
 export function RaceResultsTable({ results }: RaceResultsTableProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 race-results-table">
       {/* Desktop Table */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full">

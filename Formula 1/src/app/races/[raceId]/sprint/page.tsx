@@ -114,19 +114,23 @@ export default async function SprintResultsPage({ params, searchParams }: Sprint
     sprintResult = await getSprintResults(raceId, season)
   } catch (error) {
     return (
-      <div className="space-y-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-red-600 mb-4">Sprint Results Not Available</h1>
-          <p className="text-lg text-muted-foreground mb-8">
-            {error instanceof Error ? error.message : 'Unknown error occurred'}
-          </p>
-          <div className="space-y-4">
-            <Button asChild>
-              <Link href={`/races?season=${season}`}>
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Race Calendar
-              </Link>
-            </Button>
+      <div className="min-h-screen race-page">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="space-y-8">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold text-red-600 mb-4">Sprint Results Not Available</h1>
+              <p className="text-lg text-muted-foreground mb-8">
+                {error instanceof Error ? error.message : 'Unknown error occurred'}
+              </p>
+              <div className="space-y-4">
+                <Button asChild>
+                  <Link href={`/races?season=${season}`}>
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back to Race Calendar
+                  </Link>
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -142,7 +146,9 @@ export default async function SprintResultsPage({ params, searchParams }: Sprint
 
   return (
     <Suspense fallback={<SprintResultsSkeleton />}>
-      <div className="space-y-8">
+      <div className="min-h-screen race-page">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="space-y-8">
         {/* Header */}
         <div className="space-y-6">
           <div className="flex items-center gap-4">
@@ -312,6 +318,8 @@ export default async function SprintResultsPage({ params, searchParams }: Sprint
             <SprintResultsTable results={sprintResult.sprintResults} />
           </CardContent>
         </Card>
+          </div>
+        </div>
       </div>
     </Suspense>
   )

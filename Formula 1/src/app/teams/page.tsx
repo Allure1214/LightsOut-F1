@@ -145,7 +145,7 @@ export default async function TeamsPage({ searchParams }: TeamsPageProps) {
     selectedRound = 'current'
   }
   
-  let season, round, standings, note
+  let season: number, round: string, standings: TeamStanding[], note: string | undefined
   
   try {
     const data = await getTeamStandings(selectedSeason, selectedRound)
@@ -156,7 +156,9 @@ export default async function TeamsPage({ searchParams }: TeamsPageProps) {
   } catch (error) {
     // Return error page if API fails
     return (
-      <div className="space-y-8">
+      <div className="min-h-screen team-page">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="space-y-8">
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-2">
             <Trophy className="inline-block w-10 h-10 f1-red mr-3" />
@@ -192,13 +194,17 @@ export default async function TeamsPage({ searchParams }: TeamsPageProps) {
             </div>
           </CardContent>
         </Card>
+          </div>
+        </div>
       </div>
     )
   }
 
   return (
-    <Suspense fallback={<TeamStandingsSkeleton />}>
-      <div className="space-y-8">
+    <div className="min-h-screen team-page">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Suspense fallback={<TeamStandingsSkeleton />}>
+          <div className="space-y-8">
         {/* Enhanced Header */}
         <div className="text-center space-y-6">
           <div className="space-y-4">
@@ -362,7 +368,9 @@ export default async function TeamsPage({ searchParams }: TeamsPageProps) {
 
         {/* Points System Information */}
         <PointsSystemInfo season={season} />
+          </div>
+        </Suspense>
       </div>
-    </Suspense>
+    </div>
   )
 }

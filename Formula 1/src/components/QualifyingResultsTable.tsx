@@ -74,7 +74,7 @@ function getConstructorName(constructor: Constructor): string {
 
 export function QualifyingResultsTable({ results }: QualifyingResultsTableProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 qualifying-results-table">
       {/* Qualifying Format Info */}
       <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-2">

@@ -91,7 +91,9 @@ export function NewsClient({ initialArticles }: NewsClientProps) {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="min-h-screen news-page">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-8">
       {/* Header Section */}
       <section className="text-center space-y-4">
         <h1 className="text-4xl md:text-5xl font-bold">
@@ -346,6 +348,8 @@ export function NewsClient({ initialArticles }: NewsClientProps) {
           </div>
         </div>
       </section>
+        </div>
+      </div>
     </div>
   )
 }

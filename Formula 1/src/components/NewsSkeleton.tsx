@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export function NewsSkeleton() {
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 news-skeleton">
       {Array.from({ length: 6 }).map((_, i) => (
         <Card key={i}>
           <div className="aspect-video relative overflow-hidden rounded-t-lg">

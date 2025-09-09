@@ -94,7 +94,7 @@ function getConstructorName(constructor: Constructor): string {
 
 export function SprintResultsTable({ results }: SprintResultsTableProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 sprint-results-table">
       {/* Sprint Points Info */}
       <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-2">

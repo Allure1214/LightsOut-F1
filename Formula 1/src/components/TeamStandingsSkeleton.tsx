@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export function TeamStandingsSkeleton() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 team-standings-skeleton">
       {/* Header Skeleton */}
       <div className="text-center space-y-6">
         <div className="space-y-4">
