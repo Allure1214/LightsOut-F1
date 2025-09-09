@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Calendar, Flag, Clock, MapPin, ExternalLink, ChevronRight, Trophy, Users, Zap, Target, ChevronDown, Award } from 'lucide-react'
 import { SessionCard } from './SessionCard'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import React from 'react'
 
 interface Session {
@@ -157,14 +157,21 @@ function getDetailedCountdown(dateString: string, timeString?: string): string {
 export function RaceCard({ race, status }: RaceCardProps) {
   const [isScheduleExpanded, setIsScheduleExpanded] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
+  const [isClient, setIsClient] = useState(false)
   const daysUntil = getDaysUntilRace(race.date)
-  const detailedCountdown = getDetailedCountdown(race.date, race.time)
   const isPast = status === 'completed'
   const isLive = status === 'live'
   const isUpcoming = status === 'upcoming'
 
+  // Get countdown only on client side to prevent hydration mismatch
+  const detailedCountdown = useMemo(() => {
+    if (!isClient) return 'Loading...'
+    return getDetailedCountdown(race.date, race.time)
+  }, [isClient, race.date, race.time, currentTime])
+
   // Update countdown every second for upcoming races
   useEffect(() => {
+    setIsClient(true)
     if (isUpcoming) {
       const interval = setInterval(() => {
         setCurrentTime(new Date())
