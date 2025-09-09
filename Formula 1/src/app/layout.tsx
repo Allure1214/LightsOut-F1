@@ -81,14 +81,14 @@ export default function RootLayout({
                 <div className="lg:col-span-2">
                   <div className="flex items-center space-x-3 mb-4">
                     <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg">
-                      <Image
-                        src="/images/Logo.png"
-                        alt="LightsOut Logo"
-                        width={48}
-                        height={48}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+                    <Image
+                      src="/images/Logo.png"
+                      alt="LightsOut Logo"
+                      width={48}
+                      height={48}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                     <div>
                       <h3 className="text-2xl font-bold f1-red">LightsOut</h3>
                       <p className="text-sm text-gray-400">Formula 1 Hub</p>
@@ -208,9 +208,9 @@ export default function RootLayout({
                       aria-label="Email"
                     >
                       <Mail className="h-5 w-5" />
-                    </a>
-                  </div>
+                  </a>
                 </div>
+            </div>
               </div>
             </div>
           </footer>

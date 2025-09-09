@@ -75,7 +75,7 @@ export default async function HomePage() {
                 Experience Formula 1 like never before with live data and expert insights.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-6 sm:mb-8 px-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
                 <Button 
                   size="lg" 
                   className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-2xl hover:shadow-red-500/25 transition-all duration-300 transform hover:scale-105 focus-ring" 
@@ -101,25 +101,6 @@ export default async function HomePage() {
                 </Button>
               </div>
               
-              {/* Quick Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto px-4">
-                <div className="text-center bg-white/5 backdrop-blur-sm rounded-lg p-3 sm:p-4">
-                  <div className="text-xl sm:text-2xl font-bold text-red-400">24</div>
-                  <div className="text-xs sm:text-sm text-white/70">Races</div>
-                </div>
-                <div className="text-center bg-white/5 backdrop-blur-sm rounded-lg p-3 sm:p-4">
-                  <div className="text-xl sm:text-2xl font-bold text-red-400">20</div>
-                  <div className="text-xs sm:text-sm text-white/70">Drivers</div>
-                </div>
-                <div className="text-center bg-white/5 backdrop-blur-sm rounded-lg p-3 sm:p-4">
-                  <div className="text-xl sm:text-2xl font-bold text-red-400">10</div>
-                  <div className="text-xs sm:text-sm text-white/70">Teams</div>
-                </div>
-                <div className="text-center bg-white/5 backdrop-blur-sm rounded-lg p-3 sm:p-4">
-                  <div className="text-xl sm:text-2xl font-bold text-red-400">Live</div>
-                  <div className="text-xs sm:text-sm text-white/70">Data</div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
