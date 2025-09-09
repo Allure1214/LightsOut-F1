@@ -51,8 +51,8 @@ interface SprintRaceResult {
     circuitName: string
     country: string
     locality: string
-    lat: number
-    lng: number
+    lat: number | null
+    lng: number | null
   }
   sprintResults: SprintResult[]
 }
@@ -66,12 +66,12 @@ export async function GET(
     const season = searchParams.get('season') || '2025'
     const raceId = params.raceId
 
-    // Fetch sprint results from Jolpica F1 API
-    const jolpicaUrl = `https://api.jolpi.ca/ergast/f1/${season}/sprint.json`
+    // Fetch sprint results from F1 API (f1api.dev)
+    const f1ApiUrl = `https://f1connectapi.vercel.app/api/${season}/${raceId}/sprint/race`
     
-    console.log('Fetching sprint results from Jolpica F1 API:', jolpicaUrl)
+    console.log('Fetching sprint results from F1 API:', f1ApiUrl)
     
-    const response = await fetch(jolpicaUrl, {
+    const response = await fetch(f1ApiUrl, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -79,24 +79,23 @@ export async function GET(
       }
     })
     
-    console.log('Jolpica API Response status:', response.status)
+    console.log('F1 API Response status:', response.status)
     
     if (!response.ok) {
-      throw new Error(`Jolpica F1 API returned ${response.status}: ${response.statusText}`)
+      throw new Error(`F1 API returned ${response.status}: ${response.statusText}`)
     }
 
     const data = await response.json()
-    console.log('API Response data received:', data.MRData ? 'Success' : 'No data')
+    console.log('API Response data received:', data.races ? 'Success' : 'No data')
     
-    // Extract race data - filter by race ID
-    const races = data.MRData?.RaceTable?.Races || []
-    const raceData = races.find((race: any) => race.round === raceId)
+    // Extract race data
+    const raceData = data.races
     
     if (!raceData) {
       throw new Error(`No sprint race data found for race ${raceId}`)
     }
 
-    const sprintResults = raceData.SprintResults || []
+    const sprintResults = raceData.sprintRaceResults || []
     
     if (sprintResults.length === 0) {
       throw new Error('No sprint results found in API response')
@@ -105,53 +104,50 @@ export async function GET(
     // Transform the data to match our needs
     const transformedResults: SprintResult[] = sprintResults.map((result: any) => ({
       position: parseInt(result.position),
-      positionText: result.positionText,
+      positionText: result.position.toString(),
       points: parseFloat(result.points),
       driver: {
-        driverId: result.Driver.driverId,
-        givenName: result.Driver.givenName,
-        familyName: result.Driver.familyName,
-        nationality: result.Driver.nationality,
-        code: result.Driver.code
+        driverId: result.driver.driverId,
+        givenName: result.driver.name,
+        familyName: result.driver.surname,
+        nationality: result.driver.nationality,
+        code: result.driver.shortName
       },
       constructor: {
-        constructorId: result.Constructor.constructorId,
-        name: result.Constructor.name,
-        nationality: result.Constructor.nationality
+        constructorId: result.team.teamId,
+        name: result.team.teamName,
+        nationality: result.team.teamNationality
       },
-      grid: parseInt(result.grid),
-      laps: parseInt(result.laps),
-      status: result.status,
-      time: result.Time ? {
-        millis: result.Time.millis,
-        time: result.Time.time
+      grid: parseInt(result.gridPosition),
+      laps: 0, // F1 API doesn't provide laps data for sprint races
+      status: result.retired ? 'Retired' : 'Finished',
+      time: result.time ? {
+        millis: '',
+        time: result.time
       } : undefined,
-      fastestLap: result.FastestLap ? {
-        rank: result.FastestLap.rank,
-        lap: result.FastestLap.lap,
+      fastestLap: result.fastLap ? {
+        rank: '1',
+        lap: '1',
         time: {
-          time: result.FastestLap.Time?.time || ''
+          time: result.fastLap
         },
-        averageSpeed: result.FastestLap.AverageSpeed ? {
-          units: result.FastestLap.AverageSpeed.units || '',
-          speed: result.FastestLap.AverageSpeed.speed || ''
-        } : undefined
+        averageSpeed: undefined
       } : undefined
     }))
 
     const sprintRaceResult: SprintRaceResult = {
-      season: raceData.season,
+      season: data.season,
       round: raceData.round,
       raceName: raceData.raceName,
       date: raceData.date,
       time: raceData.time,
       circuit: {
-        circuitId: raceData.Circuit.circuitId,
-        circuitName: raceData.Circuit.circuitName,
-        country: raceData.Circuit.Location.country,
-        locality: raceData.Circuit.Location.locality,
-        lat: parseFloat(raceData.Circuit.Location.lat),
-        lng: parseFloat(raceData.Circuit.Location.long)
+        circuitId: raceData.circuit.circuitId,
+        circuitName: raceData.circuit.circuitName,
+        country: raceData.circuit.country,
+        locality: raceData.circuit.city,
+        lat: null, // F1 API doesn't provide coordinates
+        lng: null
       },
       sprintResults: transformedResults
     }
@@ -161,7 +157,7 @@ export async function GET(
     return NextResponse.json(sprintRaceResult)
 
   } catch (error) {
-    console.error('Error fetching sprint results from Jolpica F1 API:', error)
+    console.error('Error fetching sprint results from F1 API:', error)
     
     return NextResponse.json(
       { 

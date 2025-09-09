@@ -154,7 +154,7 @@ export function SprintResultsTable({ results }: SprintResultsTableProps) {
                   <span className="text-sm font-medium">{result.grid}</span>
                 </td>
                 <td className="py-3 px-4 text-center">
-                  <span className="text-sm font-medium">{result.laps}</span>
+                  <span className="text-sm font-medium text-muted-foreground">N/A</span>
                 </td>
                 <td className="py-3 px-4 text-center">
                   {result.time?.time ? (
@@ -216,7 +216,7 @@ export function SprintResultsTable({ results }: SprintResultsTableProps) {
                 </div>
                 <div>
                   <span className="text-muted-foreground">Laps:</span>
-                  <div className="font-medium">{result.laps}</div>
+                  <div className="font-medium text-muted-foreground">N/A</div>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Time:</span>

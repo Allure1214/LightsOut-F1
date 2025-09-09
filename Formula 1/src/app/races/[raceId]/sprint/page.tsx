@@ -58,8 +58,8 @@ interface SprintRaceResult {
     circuitName: string
     country: string
     locality: string
-    lat: number
-    lng: number
+    lat: number | null
+    lng: number | null
   }
   sprintResults: SprintResult[]
 }
@@ -135,7 +135,9 @@ export default async function SprintResultsPage({ params, searchParams }: Sprint
 
   const winner = sprintResult.sprintResults.find(r => r.position === 1)
   const fastestLap = sprintResult.sprintResults.find(r => r.fastestLap?.rank === '1')
-  const totalLaps = Math.max(...sprintResult.sprintResults.map(r => r.laps))
+  const totalLaps = sprintResult.sprintResults.some(r => r.laps > 0) 
+    ? Math.max(...sprintResult.sprintResults.map(r => r.laps))
+    : 0
   const finishedDrivers = sprintResult.sprintResults.filter(r => r.status === 'Finished').length
 
   return (
@@ -225,7 +227,7 @@ export default async function SprintResultsPage({ params, searchParams }: Sprint
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Total Laps:</span>
-                    <span className="font-semibold">{totalLaps}</span>
+                    <span className="font-semibold">{totalLaps > 0 ? totalLaps : 'N/A'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Finished:</span>
@@ -283,7 +285,10 @@ export default async function SprintResultsPage({ params, searchParams }: Sprint
                   <div>
                     <span className="text-sm font-medium text-muted-foreground">Coordinates:</span>
                     <div className="font-semibold">
-                      {sprintResult.circuit.lat.toFixed(4)}°, {sprintResult.circuit.lng.toFixed(4)}°
+                      {sprintResult.circuit.lat !== null && sprintResult.circuit.lng !== null 
+                        ? `${sprintResult.circuit.lat.toFixed(4)}°, ${sprintResult.circuit.lng.toFixed(4)}°`
+                        : 'Not Available'
+                      }
                     </div>
                   </div>
                 </div>
