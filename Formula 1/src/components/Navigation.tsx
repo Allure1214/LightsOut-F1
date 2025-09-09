@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Menu, X, ChevronDown, ExternalLink, Trophy, Users, Calendar, Newspaper, Home, Zap } from 'lucide-react'
+import { Menu, X, ChevronDown, ExternalLink, Trophy, Users, Calendar, Newspaper, Home, Zap, MapPin } from 'lucide-react'
 
 export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -13,6 +13,7 @@ export function Navigation() {
     { name: 'Drivers', href: '/drivers', icon: Trophy },
     { name: 'Teams', href: '/teams', icon: Users },
     { name: 'Races', href: '/races', icon: Calendar },
+    { name: 'Circuits', href: '/circuits', icon: MapPin },
     { name: 'News', href: '/news', icon: Newspaper },
   ]
 

@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Navigation } from '@/components/Navigation'
-import { Zap, Github, Twitter, Mail, ExternalLink, Trophy, Users, Calendar, Newspaper } from 'lucide-react'
+import { Zap, Github, Twitter, Mail, ExternalLink, Trophy, Users, Calendar, Newspaper, MapPin } from 'lucide-react'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -124,6 +124,12 @@ export default function RootLayout({
                       <Link href="/races" className="text-gray-300 hover:text-red-400 transition-colors duration-200 flex items-center group">
                         <Calendar className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
                         Race Calendar
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/circuits" className="text-gray-300 hover:text-red-400 transition-colors duration-200 flex items-center group">
+                        <MapPin className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
+                        Circuits
                       </Link>
                     </li>
                     <li>

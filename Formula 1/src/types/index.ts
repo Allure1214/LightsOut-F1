@@ -30,6 +30,63 @@ export interface Circuit {
   lng?: number
   url?: string
   image?: string
+  // F1 API specific fields
+  city?: string
+  circuitLength?: number
+  lapRecord?: string
+  firstParticipationYear?: number
+  numberOfCorners?: number
+  fastestLapDriverId?: string
+  fastestLapTeamId?: string
+  fastestLapYear?: number
+}
+
+// F1 API Circuit Response
+export interface F1ApiCircuitResponse {
+  api: string
+  url: string
+  limit: number
+  offset: number
+  total: number
+  circuits: Array<{
+    circuitId: string
+    circuitName: string
+    country: string
+    city: string
+    circuitLength: number
+    lapRecord: string
+    firstParticipationYear: number
+    numberOfCorners: number
+    fastestLapDriverId: string
+    fastestLapTeamId: string
+    fastestLapYear: number
+    url: string
+  }>
+}
+
+// Jolpi API Circuit Response
+export interface JolpiApiCircuitResponse {
+  MRData: {
+    xmlns: string
+    series: string
+    url: string
+    limit: string
+    offset: string
+    total: string
+    CircuitTable: {
+      Circuits: Array<{
+        circuitId: string
+        url: string
+        circuitName: string
+        Location: {
+          lat: string
+          long: string
+          locality: string
+          country: string
+        }
+      }>
+    }
+  }
 }
 
 export interface Race {
