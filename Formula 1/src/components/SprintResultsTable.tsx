@@ -130,7 +130,7 @@ export function SprintResultsTable({ results }: SprintResultsTableProps) {
                       {result.position}
                     </span>
                     {result.fastestLap?.rank === '1' && (
-                      <Zap className="w-4 h-4 text-blue-600" title="Fastest Lap" />
+                      <Zap className="w-4 h-4 text-blue-600" />
                     )}
                   </div>
                 </td>

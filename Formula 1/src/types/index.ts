@@ -96,6 +96,17 @@ export interface Article {
   comments?: Comment[]
 }
 
+export interface NewsArticle {
+  id: string
+  title: string
+  description: string
+  url: string
+  publishedAt: string
+  source: string
+  image?: string
+  category: string
+}
+
 export interface Comment {
   id: string
   content: string

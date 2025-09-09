@@ -115,7 +115,7 @@ export function SprintQualifyingResultsTable({ results }: SprintQualifyingResult
                       {result.position}
                     </span>
                     {result.position === 1 && (
-                      <Award className="w-4 h-4 text-cyan-600" title="Sprint Pole Position" />
+                      <Award className="w-4 h-4 text-cyan-600" />
                     )}
                   </div>
                 </td>

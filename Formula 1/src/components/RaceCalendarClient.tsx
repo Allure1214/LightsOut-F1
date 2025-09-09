@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { Badge } from '@/components/ui/badge'
+import { Search } from 'lucide-react'
 import { RaceCard } from './RaceCard'
 import { RaceSearch } from './RaceSearch'
 
