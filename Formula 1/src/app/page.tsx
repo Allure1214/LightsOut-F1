@@ -28,7 +28,8 @@ async function getLatestNews(): Promise<NewsArticle[]> {
 export default async function HomePage() {
   const latestNews = await getLatestNews()
   return (
-    <div className="space-y-12">
+    <div className="min-h-screen">
+      <div className="space-y-12 container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Section with Enhanced Design */}
       <section className="relative">
         <div className="relative h-[70vh] min-h-[500px] overflow-hidden rounded-2xl">
@@ -341,6 +342,7 @@ export default async function HomePage() {
         </div>
       </section>
 
+      </div>
     </div>
   )
 }
