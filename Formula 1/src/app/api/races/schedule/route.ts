@@ -1,5 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+interface Session {
+  name: string
+  type: 'practice' | 'qualifying' | 'sprint' | 'race'
+  date: string
+  time: string
+  day: string
+  order: number
+}
+
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -34,22 +44,168 @@ export async function GET(request: NextRequest) {
       throw new Error('No race schedule data found in API response')
     }
     
-    const transformedRaces = races.map((race: any) => ({
-      round: parseInt(race.round),
-      raceName: race.raceName,
-      date: race.date,
-      time: race.time,
-      circuit: {
-        circuitId: race.Circuit.circuitId,
-        circuitName: race.Circuit.circuitName,
-        country: race.Circuit.Location.country,
-        locality: race.Circuit.Location.locality,
-        lat: parseFloat(race.Circuit.Location.lat),
-        lng: parseFloat(race.Circuit.Location.long),
-        url: race.Circuit.url
-      },
-      url: race.url
-    }))
+    const transformedRaces = races.map((race: any) => {
+      // Only use real session times from API - no fallback to generated data
+      let sessions: Session[] = []
+      
+      // Check for Sprint weekend first (has Sprint and either SprintQualifying or SprintShootout)
+      if (race.Sprint && (race.SprintQualifying || race.SprintShootout) && race.FirstPractice && race.Qualifying) {
+        // Modern Sprint weekend format (2023+)
+        sessions = [
+          {
+            name: 'Free Practice 1',
+            type: 'practice',
+            date: race.FirstPractice.date,
+            time: race.FirstPractice.time,
+            day: 'Friday',
+            order: 1
+          },
+          {
+            name: 'Sprint Shootout',
+            type: 'qualifying',
+            date: (race.SprintQualifying || race.SprintShootout).date,
+            time: (race.SprintQualifying || race.SprintShootout).time,
+            day: 'Friday',
+            order: 2
+          },
+          {
+            name: 'Sprint Race',
+            type: 'sprint',
+            date: race.Sprint.date,
+            time: race.Sprint.time,
+            day: 'Saturday',
+            order: 3
+          },
+          {
+            name: 'Qualifying',
+            type: 'qualifying',
+            date: race.Qualifying.date,
+            time: race.Qualifying.time,
+            day: 'Saturday',
+            order: 4
+          },
+          {
+            name: 'Race',
+            type: 'race',
+            date: race.date,
+            time: race.time,
+            day: 'Sunday',
+            order: 5
+          }
+        ]
+      }
+      // Check for 2022 Sprint weekend format (has Sprint, FirstPractice, SecondPractice, Qualifying)
+      else if (race.Sprint && race.FirstPractice && race.SecondPractice && race.Qualifying) {
+        // 2022 Sprint weekend format
+        sessions = [
+          {
+            name: 'Free Practice 1',
+            type: 'practice',
+            date: race.FirstPractice.date,
+            time: race.FirstPractice.time,
+            day: 'Friday',
+            order: 1
+          },
+          {
+            name: 'Qualifying',
+            type: 'qualifying',
+            date: race.Qualifying.date,
+            time: race.Qualifying.time,
+            day: 'Friday',
+            order: 2
+          },
+          {
+            name: 'Free Practice 2',
+            type: 'practice',
+            date: race.SecondPractice.date,
+            time: race.SecondPractice.time,
+            day: 'Saturday',
+            order: 3
+          },
+          {
+            name: 'Sprint Race',
+            type: 'sprint',
+            date: race.Sprint.date,
+            time: race.Sprint.time,
+            day: 'Saturday',
+            order: 4
+          },
+          {
+            name: 'Race',
+            type: 'race',
+            date: race.date,
+            time: race.time,
+            day: 'Sunday',
+            order: 5
+          }
+        ]
+      }
+      // Check for regular weekend (has all four practice sessions)
+      else if (race.FirstPractice && race.SecondPractice && race.ThirdPractice && race.Qualifying) {
+        // Regular weekend format
+        sessions = [
+          {
+            name: 'Free Practice 1',
+            type: 'practice',
+            date: race.FirstPractice.date,
+            time: race.FirstPractice.time,
+            day: 'Friday',
+            order: 1
+          },
+          {
+            name: 'Free Practice 2',
+            type: 'practice',
+            date: race.SecondPractice.date,
+            time: race.SecondPractice.time,
+            day: 'Friday',
+            order: 2
+          },
+          {
+            name: 'Free Practice 3',
+            type: 'practice',
+            date: race.ThirdPractice.date,
+            time: race.ThirdPractice.time,
+            day: 'Saturday',
+            order: 3
+          },
+          {
+            name: 'Qualifying',
+            type: 'qualifying',
+            date: race.Qualifying.date,
+            time: race.Qualifying.time,
+            day: 'Saturday',
+            order: 4
+          },
+          {
+            name: 'Race',
+            type: 'race',
+            date: race.date,
+            time: race.time,
+            day: 'Sunday',
+            order: 5
+          }
+        ]
+      }
+      // If no session data available, sessions array remains empty
+      
+      return {
+        round: parseInt(race.round),
+        raceName: race.raceName,
+        date: race.date,
+        time: race.time,
+        circuit: {
+          circuitId: race.Circuit.circuitId,
+          circuitName: race.Circuit.circuitName,
+          country: race.Circuit.Location.country,
+          locality: race.Circuit.Location.locality,
+          lat: parseFloat(race.Circuit.Location.lat),
+          lng: parseFloat(race.Circuit.Location.long),
+          url: race.Circuit.url
+        },
+        url: race.url,
+        sessions: sessions
+      }
+    })
 
     console.log(`Successfully processed ${transformedRaces.length} races`)
 

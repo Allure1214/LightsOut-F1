@@ -7,9 +7,10 @@ import { ChevronDown, Calendar, Search } from 'lucide-react'
 
 interface SeasonSelectorProps {
   currentSeason: number
+  basePath?: string
 }
 
-export function SeasonSelector({ currentSeason }: SeasonSelectorProps) {
+export function SeasonSelector({ currentSeason, basePath = '/drivers' }: SeasonSelectorProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isOpen, setIsOpen] = useState(false)
@@ -45,7 +46,7 @@ export function SeasonSelector({ currentSeason }: SeasonSelectorProps) {
   const handleSeasonChange = (season: number) => {
     const params = new URLSearchParams(searchParams.toString())
     params.set('season', season.toString())
-    router.push(`/drivers?${params.toString()}`)
+    router.push(`${basePath}?${params.toString()}`)
     setIsOpen(false)
     setSearchTerm('') // Clear search when selection is made
   }

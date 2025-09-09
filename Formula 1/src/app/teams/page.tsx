@@ -5,24 +5,15 @@ import { Trophy, Flag, Calendar, ChevronDown, Medal, TrendingUp, Users, Award, E
 import { SeasonSelector } from '@/components/SeasonSelector'
 import { RoundSelector } from '@/components/RoundSelector'
 import { PointsSystemInfo } from '@/components/PointsSystemInfo'
-import { DriverStandingsSkeleton } from '@/components/DriverStandingsSkeleton'
-import { DriverStandingsTable } from '@/components/DriverStandingsTable'
+import { TeamStandingsSkeleton } from '@/components/TeamStandingsSkeleton'
+import { TeamStandingsTable } from '@/components/TeamStandingsTable'
 import { Suspense } from 'react'
 
-interface DriverStanding {
+interface TeamStanding {
   position: number
   positionText: string
   points: number
   wins: number
-  driver: {
-    driverId: string
-    code?: string
-    firstName: string
-    lastName: string
-    nationality: string
-    dateOfBirth?: string
-    url?: string
-  }
   team: {
     teamId: string
     name: string
@@ -31,15 +22,15 @@ interface DriverStanding {
   }
 }
 
-interface DriverStandingsResponse {
+interface TeamStandingsResponse {
   season: number
   round: string
-  standings: DriverStanding[]
+  standings: TeamStanding[]
   note?: string
 }
 
-async function getDriverStandings(season?: string, round?: string): Promise<DriverStandingsResponse> {
-  const url = new URL(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/drivers/standings`)
+async function getTeamStandings(season?: string, round?: string): Promise<TeamStandingsResponse> {
+  const url = new URL(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/teams/standings`)
   if (season) {
     url.searchParams.set('season', season)
   }
@@ -53,14 +44,11 @@ async function getDriverStandings(season?: string, round?: string): Promise<Driv
   
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}))
-    throw new Error(errorData.details || `Failed to fetch driver standings (${res.status})`)
+    throw new Error(errorData.details || `Failed to fetch team standings (${res.status})`)
   }
   
   return res.json()
 }
-
-
-
 
 // Get the actual number of races for each season (same as RoundSelector)
 function getRacesPerSeason(season: number): number {
@@ -142,11 +130,11 @@ function getRacesPerSeason(season: number): number {
   return 7 // Default fallback
 }
 
-interface DriversPageProps {
+interface TeamsPageProps {
   searchParams: { season?: string; round?: string }
 }
 
-export default async function DriversPage({ searchParams }: DriversPageProps) {
+export default async function TeamsPage({ searchParams }: TeamsPageProps) {
   const selectedSeason = searchParams.season || '2025'
   let selectedRound = searchParams.round || 'current'
   
@@ -160,7 +148,7 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
   let season, round, standings, note
   
   try {
-    const data = await getDriverStandings(selectedSeason, selectedRound)
+    const data = await getTeamStandings(selectedSeason, selectedRound)
     season = data.season
     round = data.round
     standings = data.standings
@@ -172,7 +160,7 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-2">
             <Trophy className="inline-block w-10 h-10 f1-red mr-3" />
-            Driver Standings
+            Team Standings
           </h1>
           <p className="text-xl text-muted-foreground">
             Unable to load current standings
@@ -183,7 +171,7 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
           <CardHeader>
             <CardTitle className="text-red-600">API Error</CardTitle>
             <CardDescription>
-              Unable to fetch driver standings from Jolpica F1 API
+              Unable to fetch team standings from Jolpica F1 API
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -209,7 +197,7 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
   }
 
   return (
-    <Suspense fallback={<DriverStandingsSkeleton />}>
+    <Suspense fallback={<TeamStandingsSkeleton />}>
       <div className="space-y-8">
         {/* Enhanced Header */}
         <div className="text-center space-y-6">
@@ -219,12 +207,12 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
                 <Trophy className="w-8 h-8 text-white" />
               </div>
               <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent">
-                Driver Standings
+                Team Standings
               </h1>
             </div>
             <div className="space-y-2">
               <p className="text-xl md:text-2xl text-muted-foreground font-medium">
-                {season} Formula 1 World Championship
+                {season} Formula 1 Constructor Championship
               </p>
               <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                 <Calendar className="w-4 h-4" />
@@ -234,8 +222,8 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
           </div>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <SeasonSelector currentSeason={season} />
-            <RoundSelector currentSeason={season} currentRound={round} />
+            <SeasonSelector currentSeason={season} basePath="/teams" />
+            <RoundSelector currentSeason={season} currentRound={round} basePath="/teams" />
             {note && (
               <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800 border-yellow-200">
                 <TrendingUp className="w-3 h-3 mr-1" />
@@ -249,13 +237,13 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="text-center p-4 bg-gradient-to-br from-red-50 to-red-100 border-red-200">
           <div className="text-2xl font-bold text-red-600">{standings.length}</div>
-          <div className="text-sm text-muted-foreground">Drivers</div>
+          <div className="text-sm text-muted-foreground">Teams</div>
         </Card>
         <Card className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
           <div className="text-2xl font-bold text-blue-600">
-            {new Set(standings.map(s => s.team.teamId)).size}
+            {standings.filter(s => s.points > 0).length}
           </div>
-          <div className="text-sm text-muted-foreground">Teams</div>
+          <div className="text-sm text-muted-foreground">Points Scorers</div>
         </Card>
         <Card className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
           <div className="text-2xl font-bold text-green-600">
@@ -272,7 +260,7 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
       </div>
 
       {/* Enhanced Standings Table */}
-      <DriverStandingsTable standings={standings} round={round} />
+      <TeamStandingsTable standings={standings} round={round} />
 
       {/* Enhanced Championship Info */}
       <div className="grid md:grid-cols-3 gap-6">
@@ -292,13 +280,13 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
                 </Badge>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Total Drivers:</span>
+                <span className="text-sm text-muted-foreground">Total Teams:</span>
                 <span className="font-bold text-lg text-blue-600">{standings.length}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Total Teams:</span>
+                <span className="text-sm text-muted-foreground">Points Scorers:</span>
                 <span className="font-bold text-lg text-blue-600">
-                  {new Set(standings.map(s => s.team.teamId)).size}
+                  {standings.filter(s => s.points > 0).length}
                 </span>
               </div>
             </div>
@@ -316,11 +304,13 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
             {standings.length > 0 && (
               <div className="text-center space-y-2">
                 <div className="text-xl font-bold text-yellow-800">
-                  {standings[0].driver.firstName} {standings[0].driver.lastName}
-                </div>
-                <div className="text-sm text-yellow-700">
                   {standings[0].team.name}
                 </div>
+                {standings[0].team.nationality && (
+                  <div className="text-sm text-yellow-700">
+                    {standings[0].team.nationality}
+                  </div>
+                )}
                 <div className="text-2xl font-bold text-yellow-600">
                   {standings[0].points.toLocaleString()} pts
                 </div>
@@ -336,21 +326,15 @@ export default async function DriversPage({ searchParams }: DriversPageProps) {
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center gap-2">
               <Users className="w-5 h-5 text-green-600" />
-              Podium Stats
+              Championship Stats
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Podium Finishers:</span>
+                <span className="text-sm text-muted-foreground">Podium Teams:</span>
                 <span className="font-bold text-lg text-green-600">
                   {standings.filter(s => s.position <= 3).length}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Points Scorers:</span>
-                <span className="font-bold text-lg text-green-600">
-                  {standings.filter(s => s.points > 0).length}
                 </span>
               </div>
               <div className="flex justify-between items-center">

@@ -8,6 +8,7 @@ import { ChevronDown, Flag } from 'lucide-react'
 interface RoundSelectorProps {
   currentSeason: number
   currentRound: string
+  basePath?: string
 }
 
 interface Race {
@@ -32,7 +33,7 @@ interface RaceScheduleResponse {
   races: Race[]
 }
 
-export function RoundSelector({ currentSeason, currentRound }: RoundSelectorProps) {
+export function RoundSelector({ currentSeason, currentRound, basePath = '/drivers' }: RoundSelectorProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isOpen, setIsOpen] = useState(false)
@@ -177,7 +178,7 @@ export function RoundSelector({ currentSeason, currentRound }: RoundSelectorProp
       params.set('round', round)
     }
     
-    router.push(`/drivers?${params.toString()}`)
+    router.push(`${basePath}?${params.toString()}`)
     setIsOpen(false)
     setSearchTerm('') // Clear search when selection is made
   }
