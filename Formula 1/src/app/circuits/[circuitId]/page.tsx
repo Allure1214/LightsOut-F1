@@ -80,9 +80,14 @@ export default function CircuitPage() {
             <Button onClick={() => fetchCircuit(params.circuitId as string)}>
               Try Again
             </Button>
-            <Link href="/circuits">
-              <Button variant="outline">Back to Circuits</Button>
-            </Link>
+            <div className="flex gap-2">
+              <Link href="/circuits">
+                <Button variant="outline">Back to Circuits</Button>
+              </Link>
+              <Link href="/races">
+                <Button variant="outline">Back to Races</Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -95,9 +100,14 @@ export default function CircuitPage() {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-600 mb-4">Circuit Not Found</h1>
           <p className="text-muted-foreground mb-4">The requested circuit could not be found.</p>
-          <Link href="/circuits">
-            <Button>Back to Circuits</Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link href="/circuits">
+              <Button>Back to Circuits</Button>
+            </Link>
+            <Link href="/races">
+              <Button variant="outline">Back to Races</Button>
+            </Link>
+          </div>
         </div>
       </div>
     )
@@ -107,10 +117,17 @@ export default function CircuitPage() {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <Link href="/circuits" className="inline-flex items-center text-muted-foreground hover:text-red-600 mb-4">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Circuits
-        </Link>
+        <div className="flex items-center gap-4 mb-4">
+          <Link href="/circuits" className="inline-flex items-center text-muted-foreground hover:text-red-600 transition-colors">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Circuits
+          </Link>
+          <span className="text-muted-foreground">|</span>
+          <Link href="/races" className="inline-flex items-center text-muted-foreground hover:text-red-600 transition-colors">
+            <Calendar className="h-4 w-4 mr-2" />
+            Back to Races
+          </Link>
+        </div>
         
         <div className="flex items-start justify-between">
           <div>

@@ -245,10 +245,10 @@ export function RaceCard({ race, status }: RaceCardProps) {
             <div className="flex items-center gap-3">
               <ExternalLink className="w-5 h-5 text-muted-foreground" />
               <div>
-                <div className="font-semibold">Race Details</div>
+                <div className="font-semibold">Circuit Details</div>
                 <div className="text-sm text-muted-foreground">
-                  <a href={race.url || '#'} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                    View Details
+                  <a href={`/circuits/${race.circuit.circuitId}`} className="text-blue-600 hover:underline">
+                    View Circuit
                   </a>
                 </div>
               </div>

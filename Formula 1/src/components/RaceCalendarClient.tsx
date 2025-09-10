@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { Badge } from '@/components/ui/badge'
-import { Search } from 'lucide-react'
+import { Search, ChevronDown, ChevronUp } from 'lucide-react'
 import { RaceCard } from './RaceCard'
 import { RaceSearch } from './RaceSearch'
 
@@ -40,6 +40,8 @@ interface RaceCalendarClientProps {
 
 export function RaceCalendarClient({ races, season }: RaceCalendarClientProps) {
   const [searchQuery, setSearchQuery] = useState('')
+  const [isUpcomingExpanded, setIsUpcomingExpanded] = useState(true)
+  const [isCompletedExpanded, setIsCompletedExpanded] = useState(false)
 
   // Filter races based on search query
   const filteredRaces = useMemo(() => {
@@ -118,34 +120,74 @@ export function RaceCalendarClient({ races, season }: RaceCalendarClientProps) {
       {/* Upcoming Races */}
       {upcomingRaces.length > 0 && (
         <div className="space-y-6">
-          <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-bold">Upcoming Races</h2>
-            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-              {upcomingRaces.length} races
-            </Badge>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="text-2xl font-bold">Upcoming Races</h2>
+              <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                {upcomingRaces.length} races
+              </Badge>
+            </div>
+            <button
+              onClick={() => setIsUpcomingExpanded(!isUpcomingExpanded)}
+              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+            >
+              {isUpcomingExpanded ? (
+                <>
+                  <ChevronUp className="w-4 h-4" />
+                  Collapse
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-4 h-4" />
+                  Expand
+                </>
+              )}
+            </button>
           </div>
-          <div className="grid gap-6">
-            {upcomingRaces.map((race) => (
-              <RaceCard key={race.round} race={race} status="upcoming" />
-            ))}
-          </div>
+          {isUpcomingExpanded && (
+            <div className="grid gap-6">
+              {upcomingRaces.map((race) => (
+                <RaceCard key={race.round} race={race} status="upcoming" />
+              ))}
+            </div>
+          )}
         </div>
       )}
 
       {/* Completed Races */}
       {completedRaces.length > 0 && (
         <div className="space-y-6">
-          <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-bold">Completed Races</h2>
-            <Badge variant="secondary" className="bg-green-100 text-green-800">
-              {completedRaces.length} races
-            </Badge>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="text-2xl font-bold">Completed Races</h2>
+              <Badge variant="secondary" className="bg-green-100 text-green-800">
+                {completedRaces.length} races
+              </Badge>
+            </div>
+            <button
+              onClick={() => setIsCompletedExpanded(!isCompletedExpanded)}
+              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+            >
+              {isCompletedExpanded ? (
+                <>
+                  <ChevronUp className="w-4 h-4" />
+                  Collapse
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-4 h-4" />
+                  Expand
+                </>
+              )}
+            </button>
           </div>
-          <div className="grid gap-6">
-            {completedRaces.map((race) => (
-              <RaceCard key={race.round} race={race} status="completed" />
-            ))}
-          </div>
+          {isCompletedExpanded && (
+            <div className="grid gap-6">
+              {completedRaces.map((race) => (
+                <RaceCard key={race.round} race={race} status="completed" />
+              ))}
+            </div>
+          )}
         </div>
       )}
 
