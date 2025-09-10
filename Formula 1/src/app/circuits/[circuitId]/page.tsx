@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { MapPin, Clock, Ruler, Trophy, Calendar, ExternalLink, ArrowLeft, Flag } from 'lucide-react'
+import { MapPin, Clock, Ruler, Trophy, Calendar, ExternalLink, ArrowLeft, Flag, Route } from 'lucide-react'
 import { Circuit } from '@/types'
 import 'leaflet/dist/leaflet.css'
 
@@ -24,12 +24,14 @@ L.Icon.Default.mergeOptions({
 export default function CircuitPage() {
   const params = useParams()
   const [circuit, setCircuit] = useState<Circuit | null>(null)
+  const [trackData, setTrackData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (params.circuitId) {
       fetchCircuit(params.circuitId as string)
+      fetchTrackData(params.circuitId as string)
     }
   }, [params.circuitId])
 
@@ -49,6 +51,18 @@ export default function CircuitPage() {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchTrackData = async (circuitId: string) => {
+    try {
+      const response = await fetch(`/api/circuits/${circuitId}/track`)
+      if (response.ok) {
+        const data = await response.json()
+        setTrackData(data)
+      }
+    } catch (err) {
+      console.warn('Failed to fetch track data:', err)
     }
   }
 
@@ -133,14 +147,31 @@ export default function CircuitPage() {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
-              <Marker position={[circuit.lat, circuit.lng]}>
-                <Popup>
-                  <div className="p-2">
-                    <h3 className="font-bold text-red-600">{circuit.name}</h3>
-                    <p className="text-sm text-gray-600">{circuit.city}, {circuit.country}</p>
-                  </div>
-                </Popup>
-              </Marker>
+              {trackData && (
+                <GeoJSON
+                  data={trackData}
+                  style={{
+                    color: '#dc2626',
+                    weight: 4,
+                    opacity: 0.8,
+                    fillOpacity: 0.1,
+                    fillColor: '#dc2626'
+                  }}
+                  onEachFeature={(feature, layer) => {
+                    if (feature.properties) {
+                      const props = feature.properties
+                      layer.bindPopup(`
+                        <div class="p-2">
+                          <h3 class="font-bold text-red-600">${props.Name}</h3>
+                          <p class="text-sm text-gray-600">${props.Location}</p>
+                          <p class="text-sm text-gray-600">Length: ${props.length} m</p>
+                          <p class="text-sm text-gray-600">First GP: ${props.firstgp}</p>
+                        </div>
+                      `)
+                    }
+                  }}
+                />
+              )}
             </MapContainer>
           ) : (
             <div className="h-full flex items-center justify-center bg-gray-100 text-muted-foreground">
@@ -236,6 +267,55 @@ export default function CircuitPage() {
                       <span className="font-medium">{circuit.fastestLapYear}</span>
                     </p>
                   )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Track Layout */}
+          {trackData && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Route className="h-5 w-5 mr-2" />
+                  Track Layout
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {trackData.features[0]?.properties && (
+                    <>
+                      <p className="text-sm">
+                        <span className="text-muted-foreground">Track Length:</span>{' '}
+                        <span className="font-medium">
+                          {(trackData.features[0].properties.length / 1000).toFixed(3)} km
+                        </span>
+                      </p>
+                      <p className="text-sm">
+                        <span className="text-muted-foreground">Altitude:</span>{' '}
+                        <span className="font-medium">
+                          {trackData.features[0].properties.altitude} m
+                        </span>
+                      </p>
+                      <p className="text-sm">
+                        <span className="text-muted-foreground">Opened:</span>{' '}
+                        <span className="font-medium">
+                          {trackData.features[0].properties.opened}
+                        </span>
+                      </p>
+                      <p className="text-sm">
+                        <span className="text-muted-foreground">First F1 GP:</span>{' '}
+                        <span className="font-medium">
+                          {trackData.features[0].properties.firstgp}
+                        </span>
+                      </p>
+                    </>
+                  )}
+                  <div className="mt-3 p-2 bg-red-50 dark:bg-red-950/20 rounded-lg">
+                    <p className="text-xs text-red-700 dark:text-red-300">
+                      💡 Click on the track in the map to see detailed information
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
