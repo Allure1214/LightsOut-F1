@@ -72,7 +72,6 @@ export default async function HomePage() {
               
               <p className="text-base sm:text-xl md:text-2xl mb-6 sm:mb-8 max-w-4xl mx-auto leading-relaxed text-white/90 font-light px-2">
                 Your ultimate destination for real-time F1 statistics, breaking news, and comprehensive analysis. 
-                Experience Formula 1 like never before with live data and expert insights.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
