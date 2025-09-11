@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Navigation } from '@/components/Navigation'
+import { RaceCountdown } from '@/components/RaceCountdown'
 import { Zap, Github, Twitter, Mail, ExternalLink, Trophy, Users, Calendar, Newspaper, MapPin } from 'lucide-react'
 import './globals.css'
 
@@ -67,6 +68,9 @@ export default function RootLayout({
               </nav>
             </div>
           </header>
+
+          {/* Race Countdown */}
+          <RaceCountdown />
 
           {/* Main Content */}
           <main className="flex-1">
